@@ -1,0 +1,139 @@
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>List Item</h3>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Type</th>
+                            <th>Deskripsi</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bank-table-body">
+                        <!-- Data will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+<script>
+fetch('http://localhost:3000/api/items')
+  .then(response => response.json())
+  .then(result => {
+    const tbody = document.getElementById('bank-table-body');
+    tbody.innerHTML = '';
+    if (!result.data || result.data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">Data tidak ditemukan</td></tr>`;
+    } else {
+      result.data.forEach(item => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.item_code || ''}</td>
+            <td>${item.item_name}</td>
+            <td>${item.unit_of_measure}</td>
+            <td>${item.description}</td>
+            <td>
+              <button class="btn btn-sm btn-primary" title="Edit" onclick="editItems('${item.item_id}')">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" title="Delete" onclick="deleteItems('${item.item_id}')">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+  })
+  .catch(err => {
+    document.getElementById('bank-table-body').innerHTML =
+      `<tr><td colspan="5">Gagal memuat data</td></tr>`;
+  });
+
+function editItems(id) {
+  fetch(`http://localhost:3000/api/items/${id}`)
+    .then(response => response.json())
+    .then(result => {
+      if (result.status === 'success' && result.data) {
+        const supplier = result.data;
+        // Isi form edit sesuai id input di form Anda
+        document.getElementById('item_id').value = supplier.item_id;
+        document.getElementById('item_code').value = supplier.item_code || '';
+        document.getElementById('item_name').value = supplier.item_name || '';
+        document.getElementById('unit_of_measure').value = supplier.unit_of_measure || '';
+        document.getElementById('description').value = supplier.description || '';
+        // Scroll ke form jika perlu
+        document.getElementById('item_name').focus();
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: result.message || 'Data tidak ditemukan.'
+        });
+      }
+    })
+    .catch(() => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Terjadi kesalahan saat mengambil data.'
+      });
+    });
+}
+
+// Delete function with confirmation
+function deleteItems(id) {
+  Swal.fire({
+    title: 'Yakin hapus data ini?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`http://localhost:3000/api/items/${id}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(res => {
+        if (res.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: 'data berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: res.message || 'data gagal dihapus.'
+          });
+        }
+      })
+      .catch(() => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: 'Terjadi kesalahan saat menghapus data.'
+        });
+      });
+    }
+  });
+}
+</script>

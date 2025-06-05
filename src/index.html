@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    @@include('_style.html')
+</head>
+<body>
+    <script src="assets/static/js/initTheme.js"></script>
+    <div id="app">
+
+        @@include('_sidebar.html')
+        <div id="main">
+            @@include('_header.html')
+            
+            @@include('dashboard_content.html')
+
+            @@include('_footer.html')
+        </div>
+    </div>
+    @@include('_scripts.html')
+    <script src="/assets/extensions/apexcharts/apexcharts.min.js"></script>
+    <script src="/assets/static/js/pages/dashboard.js"></script>
+</body>
+
+</html>
