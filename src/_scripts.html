@@ -1,3 +1,11 @@
 <script src="/assets/static/js/components/dark.js"></script>
 <script src="/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/assets/compiled/js/app.js"></script>
+<script src="/assets/static/js/auth-guard.js"></script>
+<script>
+  $(document).on('click', '#logout-btn', function(e) {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = '/auth-login.html';
+  });
+</script>

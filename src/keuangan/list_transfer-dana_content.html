@@ -1,0 +1,247 @@
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>List Transfer Dana</h3>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Dari Akun</th>
+                            <th>Ke Akun</th>
+                            <th>Jumlah</th>
+                            <th>Keterangan</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transfer-table-body">
+                        <!-- Data will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modal Detail Transfer Dana -->
+<div class="modal fade" id="modalDetailTransfer" tabindex="-1" aria-labelledby="modalDetailTransferLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalDetailTransferLabel">
+          <i class="bi bi-info-circle me-2"></i>Detail Transfer Dana
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4">Tanggal Transfer</dt>
+          <dd class="col-sm-8" id="detail-transfer-date"></dd>
+
+          <dt class="col-sm-4">Dari Akun</dt>
+          <dd class="col-sm-8" id="detail-source-account"></dd>
+
+          <dt class="col-sm-4">Ke Akun</dt>
+          <dd class="col-sm-8" id="detail-destination-account"></dd>
+
+          <dt class="col-sm-4">Jumlah</dt>
+          <dd class="col-sm-8 fw-bold text-success" id="detail-amount"></dd>
+
+          <dt class="col-sm-4">Keterangan</dt>
+          <dd class="col-sm-8" id="detail-description"></dd>
+
+          <dt class="col-sm-4">Status</dt>
+          <dd class="col-sm-8" id="detail-status"></dd>
+
+          <dt class="col-sm-4">Dibuat Oleh</dt>
+          <dd class="col-sm-8" id="detail-created-by"></dd>
+        </dl>
+        <hr>
+        <div id="detail-interest-section" style="display:none;">
+          <h6 class="mb-3"><i class="bi bi-percent me-2"></i>Detail Bunga Transfer</h6>
+          <dl class="row mb-0">
+            <dt class="col-sm-4">Konfigurasi Bunga</dt>
+            <dd class="col-sm-8" id="detail-interest-config"></dd>
+
+            <dt class="col-sm-4">Tanggal Mulai</dt>
+            <dd class="col-sm-8" id="detail-interest-start"></dd>
+
+            <dt class="col-sm-4">Tanggal Akhir</dt>
+            <dd class="col-sm-8" id="detail-interest-end"></dd>
+
+            <dt class="col-sm-4">Rate</dt>
+            <dd class="col-sm-8" id="detail-interest-rate"></dd>
+
+            <dt class="col-sm-4">Jenis Perhitungan</dt>
+            <dd class="col-sm-8" id="detail-interest-type"></dd>
+
+            <dt class="col-sm-4">Jumlah Bunga</dt>
+            <dd class="col-sm-8 fw-bold text-danger" id="detail-interest-amount"></dd>
+          </dl>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x"></i> Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function formatRupiah(angka) {
+  return 'Rp ' + angka.toLocaleString('id-ID');
+}
+
+fetch('http://localhost:3000/api/transactions', {
+    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+})
+  .then(response => response.json())
+  .then(result => {
+    const tbody = document.getElementById('transfer-table-body');
+    tbody.innerHTML = '';
+    if (!result.data || result.data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7">Data tidak ditemukan</td></tr>`;
+    } else {
+      result.data.forEach(trx => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${trx.transfer_date ? trx.transfer_date.substr(0,10) : ''}</td>
+            <td>${trx.source_account_name || ''}</td>
+            <td>${trx.destination_account_name || ''}</td>
+            <td>${trx.amount != null ? formatRupiah(Number(trx.amount)) : ''}</td>
+            <td>${trx.description || ''}</td>
+            <td>
+              <span class="badge bg-${trx.status === 'success' ? 'success' : 'secondary'}">
+                ${trx.status === 'success' ? 'Sukses' : 'Draft'}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-primary" title="Detail" onclick="detailTransfer('${trx.transfer_id}')">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" title="Delete" onclick="deleteTransfer('${trx.transfer_id}')">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+  })
+  .catch(err => {
+    document.getElementById('transfer-table-body').innerHTML =
+      `<tr><td colspan="7">Gagal memuat data</td></tr>`;
+  });
+
+// Detail transfer function (implementasi sesuai kebutuhan)
+function detailTransfer(id) {
+  fetch(`http://localhost:3000/api/transactions/${id}`, {
+    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+  })
+    .then(response => response.json())
+    .then(res => {
+      if (res.data) {
+        const trx = res.data;
+        $('#detail-transfer-date').text(trx.transfer_date ? trx.transfer_date.substr(0,10) : '-');
+        $('#detail-source-account').text(trx.source_account_name || '-');
+        $('#detail-destination-account').text(trx.destination_account_name || '-');
+        $('#detail-amount').text(trx.amount != null ? formatRupiah(Number(trx.amount)) : '-');
+        $('#detail-description').text(trx.description || '-');
+        $('#detail-status').html(
+          trx.status === 'success'
+            ? '<span class="badge bg-success">Sukses</span>'
+            : '<span class="badge bg-secondary">Draft</span>'
+        );
+        $('#detail-created-by').text(trx.created_by_name || '-');
+
+        // Bunga (jika ada)
+        if (trx.interest_config_name) {
+          $('#detail-interest-section').show();
+          $('#detail-interest-config').text(trx.interest_config_name || '-');
+          $('#detail-interest-start').text(trx.interest_start_date || '-');
+          $('#detail-interest-end').text(trx.interest_end_date || '-');
+          $('#detail-interest-rate').text(trx.interest_rate_percentage != null ? formatPersen(trx.interest_rate_percentage) : '-');
+          $('#detail-interest-type').text(trx.interest_calculation_type || '-');
+          $('#detail-interest-amount').text(trx.interest_amount != null ? formatRupiah(Number(trx.interest_amount)) : '-');
+        } else {
+          $('#detail-interest-section').hide();
+        }
+
+        // Tampilkan modal
+        var modal = new bootstrap.Modal(document.getElementById('modalDetailTransfer'));
+        modal.show();
+      }
+    });
+}
+
+// Delete transfer function
+function deleteTransfer(id) {
+  Swal.fire({
+    title: 'Yakin hapus data ini?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`http://localhost:3000/api/transfer-funds/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+      })
+      .then(response => response.json())
+      .then(res => {
+        if (res.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: 'Data berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: res.message || 'Data gagal dihapus.'
+          });
+        }
+      })
+      .catch(() => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: 'Terjadi kesalahan saat menghapus data.'
+        });
+      });
+    }
+  });
+}
+
+function formatPersen(val) {
+  if (val == null) {
+    return '';
+  }
+
+  const percentage = parseFloat(val) * 100; // Konversi ke persentase (misal: 0.10 -> 10, 0.0125 -> 1.25)
+
+  // Periksa apakah angka hasil persentase adalah bilangan bulat (tidak ada sisa desimal)
+  if (percentage % 1 === 0) {
+    // Jika bilangan bulat (misal: 10.00), gunakan toFixed(0) untuk menghilangkan desimal
+    return percentage.toFixed(0) + ' %';
+  } else {
+    // Jika ada desimal (misal: 1.25), gunakan toFixed(2) untuk membulatkan ke dua angka desimal
+    return percentage.toFixed(2) + ' %';
+  }
+}
+</script>

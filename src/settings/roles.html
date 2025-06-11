@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    @@include('_style.html')
+    <link rel="stylesheet" href="/assets/extensions/simple-datatables/style.css">
+    <link rel="stylesheet" href="/assets/compiled/css/table-datatable.css">
+</head>
+<body>
+    <script src="/assets/static/js/initTheme.js"></script>
+    <div id="app">
+
+        @@include('_sidebar.html')
+        <div id="main">
+            @@include('_header.html')
+            
+            @@include('settings/form_roles_content.html')
+            @@include('settings/list_roles_content.html')
+
+            @@include('_footer.html')
+        </div>
+    </div>
+    @@include('_scripts.html')
+    <script src="/assets/static/js/pages/form-element-select.js"></script>
+    <script src="/assets/extensions/simple-datatables/umd/simple-datatables.js"></script>
+    <script src="/assets/static/js/pages/simple-datatables.js"></script>
+    <script src="/assets/extensions/jquery/jquery.min.js"></script>
+    <script src="/assets/extensions/parsleyjs/parsley.min.js"></script>
+    <script src="/assets/static/js/pages/parsley.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>

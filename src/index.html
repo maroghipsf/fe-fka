@@ -8,15 +8,18 @@
     @@include('_style.html')
 </head>
 <body>
+    <script>
+      // Jika tidak ada token, redirect ke halaman login
+      if (!localStorage.getItem('token')) {
+        window.location.href = 'auth-login.html';
+      }
+    </script>
     <script src="assets/static/js/initTheme.js"></script>
     <div id="app">
-
         @@include('_sidebar.html')
         <div id="main">
             @@include('_header.html')
-            
             @@include('dashboard_content.html')
-
             @@include('_footer.html')
         </div>
     </div>

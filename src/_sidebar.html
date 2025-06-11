@@ -2,8 +2,14 @@
     <div class="sidebar-wrapper active">
         <div class="sidebar-header position-relative">
             <div class="d-flex justify-content-between align-items-center">
-                <div class="logo">
+                <div class="logo d-flex align-items-center">
                     <a href="/index.html"><img src="/assets/compiled/svg/logo.svg" alt="Logo"></a>
+                </div>
+                <!-- Logout icon di pojok kanan -->
+                <div>
+                    <a id="logout-btn" title="Logout" class="d-inline-block">
+                        <i class="bi bi-box-arrow-right fs-4"></i>
+                    </a>
                 </div>
                 <div class="sidebar-toggler x">
                     <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -38,12 +44,6 @@
                     <a href="/keuangan/transfer-dana.html" class="sidebar-link">
                         <i class="bi bi-arrow-left-right"></i>
                         <span>Transfer Dana</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="/keuangan/manajemen-bunga.html" class="sidebar-link">
-                        <i class="bi bi-percent"></i>
-                        <span>Manajemen Bunga Bank Utama</span>
                     </a>
                 </li>
                 <li class="sidebar-item has-sub">
@@ -115,6 +115,12 @@
                     <a href="/master/akun-bank.html" class="sidebar-link">
                         <i class="bi bi-bank"></i>
                         <span>Manajemen Akun Bank</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/master/manajemen-bunga.html" class="sidebar-link">
+                        <i class="bi bi-percent"></i>
+                        <span>Manajemen Bunga Bank</span>
                     </a>
                 </li>
 

@@ -12,7 +12,7 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">
-              List Items
+              Manajemen Akun Bank
             </li>
           </ol>
         </nav>
@@ -28,60 +28,52 @@
           <div class="card-content">
             <div class="card-body">
               <form class="form" data-parsley-validate>
-                <input type="hidden" id="item_id" name="id" value="" />
+                <input type="hidden" id="account_id" name="id" value="" />
                 <div class="row">
-                  <!-- Kode Item (opsional) -->
-                  <div class="col-md-4 col-12">
-                    <div class="form-group">
-                      <label for="item_code" class="form-label">Kode Item</label>
-                      <input
-                        type="text"
-                        id="item_code"
-                        class="form-control"
-                        placeholder="Kode Item"
-                        name="item_code"
-                      />
-                    </div>
-                  </div>
-                  <!-- Nama Item -->
+                  <!-- Nama Akun Bank -->
                   <div class="col-md-4 col-12">
                     <div class="form-group mandatory">
-                      <label for="item_name" class="form-label">Nama Item</label>
+                      <label for="account_name" class="form-label">Nama Akun Bank</label>
                       <input
                         type="text"
-                        id="item_name"
+                        id="account_name"
                         class="form-control"
-                        placeholder="Nama Item"
-                        name="item_name"
+                        placeholder="Nama Akun Bank"
+                        name="account_name"
                         data-parsley-required="true"
                       />
                     </div>
                   </div>
-                  <!-- Satuan Pengukuran -->
+                  <!-- Tipe Akun -->
                   <div class="col-md-4 col-12">
                     <div class="form-group mandatory">
-                      <label for="unit_of_measure" class="form-label">Satuan Pengukuran</label>
-                      <input
-                        type="text"
-                        id="unit_of_measure"
-                        class="form-control"
-                        placeholder="Satuan (misal: kg, pcs, liter)"
-                        name="unit_of_measure"
+                      <label for="account_type" class="form-label">Tipe Akun</label>
+                      <select
+                        id="account_type"
+                        class="form-select"
+                        name="account_type"
                         data-parsley-required="true"
-                      />
+                      >
+                        <option value="">Pilih Tipe</option>
+                        <option value="Modal">Modal</option>
+                        <option value="Operasional">Operasional</option>
+                      </select>
                     </div>
                   </div>
-                  <!-- Deskripsi -->
-                  <div class="col-12">
-                    <div class="form-group">
-                      <label for="description" class="form-label">Deskripsi</label>
-                      <textarea
-                        id="description"
+                  <!-- Saldo Saat Ini -->
+                  <div class="col-md-4 col-12">
+                    <div class="form-group mandatory">
+                      <label for="current_balance" class="form-label">Saldo Saat Ini</label>
+                      <input
+                        type="number"
+                        id="current_balance"
                         class="form-control"
-                        placeholder="Deskripsi"
-                        name="description"
-                        rows="2"
-                      ></textarea>
+                        placeholder="0.00"
+                        name="current_balance"
+                        step="0.01"
+                        min="0"
+                        data-parsley-required="true"
+                      />
                     </div>
                   </div>
                 </div>
@@ -120,18 +112,17 @@ $(function() {
       return;
     }
 
-    var id = $('#item_id').val();
+    var id = $('#account_id').val();
     var payload = {
-      item_code: $('#item_code').val(),
-      item_name: $('#item_name').val(),
-      unit_of_measure: $('#unit_of_measure').val(),
-      description: $('#description').val()
+      account_name: $('#account_name').val(),
+      account_type: $('#account_type').val(),
+      current_balance: $('#current_balance').val()
     };
 
     if (id) {
       // UPDATE (PUT)
       $.ajax({
-        url: 'http://localhost:3000/api/items/' + id,
+        url: 'http://localhost:3000/api/accounts/' + id,
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(payload),
@@ -139,7 +130,7 @@ $(function() {
           Swal.fire({
             icon: 'success',
             title: 'Sukses',
-            text: 'Data item berhasil diperbarui!',
+            text: 'Data akun bank berhasil diperbarui!',
             timer: 1500,
             showConfirmButton: false
           }).then(() => {
@@ -153,7 +144,7 @@ $(function() {
     } else {
       // TAMBAH BARU (POST)
       $.ajax({
-        url: 'http://localhost:3000/api/items',
+        url: 'http://localhost:3000/api/accounts',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(payload),
@@ -161,7 +152,7 @@ $(function() {
           Swal.fire({
             icon: 'success',
             title: 'Sukses',
-            text: 'Data item berhasil ditambahkan!',
+            text: 'Data akun bank berhasil ditambahkan!',
             timer: 1500,
             showConfirmButton: false
           }).then(() => {

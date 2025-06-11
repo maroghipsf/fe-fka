@@ -1,0 +1,169 @@
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>List Konfigurasi Bunga</h3>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>Nama Konfigurasi</th>
+                            <th>Persentase Bunga</th>
+                            <th>Tipe Perhitungan</th>
+                            <th>Deskripsi</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="interest-table-body">
+                        <!-- Data will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+<script>
+fetch('http://localhost:3000/api/interest-configs')
+  .then(response => response.json())
+  .then(result => {
+    const tbody = document.getElementById('interest-table-body');
+    tbody.innerHTML = '';
+    if (!result.data || result.data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6">Data tidak ditemukan</td></tr>`;
+    } else {
+      result.data.forEach(cfg => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${cfg.config_name || ''}</td>
+            <td>${formatPersen(cfg.rate_percentage)}</td>
+            <td>${
+              cfg.calculation_type === 'Annual' ? 'Tahunan' :
+              cfg.calculation_type === 'Monthly' ? 'Bulanan' :
+              cfg.calculation_type === 'Daily' ? 'Harian' :
+              cfg.calculation_type
+            }</td>
+            <td>${cfg.description || ''}</td>
+            <td>
+              <span class="badge bg-${cfg.is_active ? 'success' : 'secondary'}">
+                ${cfg.is_active ? 'Aktif' : 'Tidak Aktif'}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-primary" title="Edit" onclick="editInterestConfig('${cfg.interest_config_id}')">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" title="Delete" onclick="deleteInterestConfig('${cfg.interest_config_id}')">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+  })
+  .catch(err => {
+    document.getElementById('interest-table-body').innerHTML =
+      `<tr><td colspan="6">Gagal memuat data</td></tr>`;
+  });
+
+function editInterestConfig(id) {
+  fetch(`http://localhost:3000/api/interest-configs/${id}`)
+    .then(response => response.json())
+    .then(result => {
+      if (result.status === "success" && result.data) {
+        const cfg = result.data;
+        console.log(cfg);
+        // Isi form edit sesuai id input di form Anda
+        document.getElementById('interest_config_id').value = cfg.interest_config_id;
+        document.getElementById('config_name').value = cfg.config_name || '';
+        document.getElementById('rate_percentage').value = cfg.rate_percentage || '';
+        document.getElementById('calculation_type').value = cfg.calculation_type || '';
+        document.getElementById('description').value = cfg.description || '';
+        // Scroll ke form jika perlu
+        document.getElementById('config_name').focus();
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: result.message || 'Data tidak ditemukan.'
+        });
+      }
+    })
+    .catch(() => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Terjadi kesalahan saat mengambil data.'
+      });
+    });
+}
+
+// Delete function with confirmation
+function deleteInterestConfig(id) {
+  Swal.fire({
+    title: 'Yakin hapus data ini?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`http://localhost:3000/api/interest-configs/${id}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(res => {
+        if (res.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: 'data berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: res.message || 'data gagal dihapus.'
+          });
+        }
+      })
+      .catch(() => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: 'Terjadi kesalahan saat menghapus data.'
+        });
+      });
+    }
+  });
+}
+
+function formatPersen(val) {
+  if (val == null) {
+    return '';
+  }
+
+  const percentage = parseFloat(val) * 100; // Konversi ke persentase (misal: 0.10 -> 10, 0.0125 -> 1.25)
+
+  // Periksa apakah angka hasil persentase adalah bilangan bulat (tidak ada sisa desimal)
+  if (percentage % 1 === 0) {
+    // Jika bilangan bulat (misal: 10.00), gunakan toFixed(0) untuk menghilangkan desimal
+    return percentage.toFixed(0) + ' %';
+  } else {
+    // Jika ada desimal (misal: 1.25), gunakan toFixed(2) untuk membulatkan ke dua angka desimal
+    return percentage.toFixed(2) + ' %';
+  }
+}
+</script>

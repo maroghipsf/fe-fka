@@ -1,0 +1,290 @@
+<div class="page-heading">
+  <div class="page-title">
+    <div class="row">
+      <div class="col-12 col-md-6 order-md-1 order-last">
+        <h3>Form</h3>
+      </div>
+      <div class="col-12 col-md-6 order-md-2 order-first">
+        <nav
+          aria-label="breadcrumb"
+          class="breadcrumb-header float-start float-lg-end"
+        >
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Manajemen Peran & Hak Akses
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- // Basic multiple Column Form section start -->
+  <section id="multiple-column-form">
+    <div class="row match-height">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <form class="form" id="transferDanaForm" data-parsley-validate>
+                <div class="row">
+                  <!-- Dari Akun -->
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="source_account_id" class="form-label">Dari Akun</label>
+                      <select id="source_account_id" name="source_account_id" class="form-select" data-parsley-required="true">
+                        <option value="">Pilih Akun Sumber</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- Ke Akun -->
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="destination_account_id" class="form-label">Ke Akun</label>
+                      <select id="destination_account_id" name="destination_account_id" class="form-select" data-parsley-required="true">
+                        <option value="">Pilih Akun Tujuan</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- Jumlah Transfer -->
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="amount" class="form-label">Jumlah (Pokok)</label>
+                      <input type="number" min="0.01" step="0.01" id="amount" name="amount" class="form-control" data-parsley-required="true" data-parsley-type="number" placeholder="Masukkan jumlah transfer">
+                    </div>
+                  </div>
+                  <!-- Keterangan -->
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label for="description" class="form-label">Keterangan</label>
+                      <textarea id="description" name="description" class="form-control" placeholder="Catatan tambahan"></textarea>
+                    </div>
+                  </div>
+                  <!-- Dilakukan Oleh (hidden) -->
+                  <input type="hidden" id="created_by" name="created_by" />
+                </div>
+
+                <!-- Opsi Bunga (hidden by default) -->
+                <div class="row mt-3" id="interest-section" style="display:none; border-top:1px solid #eee;">
+                  <div class="col-12">
+                    <div class="form-check mt-2">
+                      <input class="form-check-input" type="checkbox" id="apply_interest" name="apply_interest">
+                      <label class="form-check-label" for="apply_interest">
+                        Terapkan Bunga untuk Transfer ini?
+                      </label>
+                    </div>
+                  </div>
+                  <div id="interest-config-fields" style="display:none;">
+                    <div class="row">
+                      <!-- Konfigurasi Bunga -->
+                      <div class="col-md-4 col-12 mt-2">
+                        <div class="form-group mandatory">
+                          <label for="interest_config_id" class="form-label">Pilih Konfigurasi Bunga</label>
+                          <select id="interest_config_id" name="interest_config_id" class="form-select">
+                            <option value="">Pilih Konfigurasi</option>
+                          </select>
+                        </div>
+                      </div>
+                      <!-- Tanggal Mulai Bunga -->
+                      <div class="col-md-4 col-12 mt-2">
+                        <div class="form-group mandatory">
+                          <label for="interest_start_date" class="form-label">Tanggal Mulai Bunga</label>
+                          <input type="date" id="interest_start_date" name="interest_start_date" class="form-control">
+                        </div>
+                      </div>
+                      <!-- Tanggal Akhir Bunga -->
+                      <div class="col-md-4 col-12 mt-2">
+                        <div class="form-group mandatory">
+                          <label for="interest_end_date" class="form-label">Tanggal Akhir Bunga</label>
+                          <input type="date" id="interest_end_date" name="interest_end_date" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary me-1 mb-1" id="submitBtn">Submit</button>
+                    <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- // Basic multiple Column Form section end -->
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/parsleyjs"></script>
+<script>
+$(function() {
+  // 1. Populate akun (Accounts)
+  function populateAccounts() {
+    $.ajax({
+      url: 'http://localhost:3000/api/accounts',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      success: function(res) {
+        if (res.data) {
+          let options = '<option value="">Pilih Akun</option>';
+          res.data.forEach(acc => {
+            options += `<option value="${acc.account_id}" data-type="${acc.account_type}">${acc.account_name} (${acc.account_type})</option>`;
+          });
+          $('#source_account_id').html(options);
+          $('#destination_account_id').html(options);
+        }
+      }
+    });
+  }
+  populateAccounts();
+
+  function formatPersen(val) {
+    if (val == null) {
+      return '';
+    }
+
+    const percentage = parseFloat(val) * 100; // Konversi ke persentase (misal: 0.10 -> 10, 0.0125 -> 1.25)
+
+    // Periksa apakah angka hasil persentase adalah bilangan bulat (tidak ada sisa desimal)
+    if (percentage % 1 === 0) {
+      // Jika bilangan bulat (misal: 10.00), gunakan toFixed(0) untuk menghilangkan desimal
+      return percentage.toFixed(0) + ' %';
+    } else {
+      // Jika ada desimal (misal: 1.25), gunakan toFixed(2) untuk membulatkan ke dua angka desimal
+      return percentage.toFixed(2) + ' %';
+    }
+  }
+  // Populate konfigurasi bunga dari endpoint interest-configs
+  function populateInterestConfigs() {
+    $.ajax({
+      url: 'http://localhost:3000/api/interest-configs?is_active=1',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      success: function(res) {
+        if (res.data) {
+          let options = '<option value="">Pilih Konfigurasi</option>';
+          res.data.forEach(cfg => {
+            options += `<option value="${cfg.interest_config_id}">${cfg.config_name} (${formatPersen(cfg.rate_percentage)} - ${cfg.calculation_type})</option>`;
+          });
+          $('#interest_config_id').html(options);
+        }
+      }
+    });
+  }
+  populateInterestConfigs();
+
+  // 3. Filter akun tujuan agar tidak sama dengan sumber
+  $('#source_account_id').on('change', function() {
+    let sourceVal = $(this).val();
+    $('#destination_account_id option').show();
+    if (sourceVal) {
+      $('#destination_account_id option[value="' + sourceVal + '"]').hide();
+    }
+    // Cek apakah perlu tampilkan bunga
+    let srcType = $('#source_account_id option:selected').data('type');
+    let dstType = $('#destination_account_id option:selected').data('type');
+    toggleInterestSection(srcType, dstType);
+  });
+
+  $('#destination_account_id').on('change', function() {
+    let srcType = $('#source_account_id option:selected').data('type');
+    let dstType = $('#destination_account_id option:selected').data('type');
+    toggleInterestSection(srcType, dstType);
+  });
+
+  // 4. Tampilkan/Hide section bunga
+  function toggleInterestSection(srcType, dstType) {
+    if (srcType === 'Modal' && dstType === 'Operasional') {
+      $('#interest-section').show();
+    } else {
+      $('#interest-section').hide();
+      $('#apply_interest').prop('checked', false);
+      $('#interest-config-fields').hide();
+      // Reset field bunga
+      $('#interest_config_id').val('');
+      $('#interest_start_date').val('');
+      $('#interest_end_date').val('');
+    }
+  }
+
+  // 5. Checkbox bunga
+  $('#apply_interest').on('change', function() {
+    if ($(this).is(':checked')) {
+      $('#interest-config-fields').show();
+      $('#interest_config_id').attr('data-parsley-required', 'true');
+      $('#interest_start_date').attr('data-parsley-required', 'true');
+      $('#interest_end_date').attr('data-parsley-required', 'true');
+    } else {
+      $('#interest-config-fields').hide();
+      $('#interest_config_id').removeAttr('data-parsley-required');
+      $('#interest_start_date').removeAttr('data-parsley-required');
+      $('#interest_end_date').removeAttr('data-parsley-required');
+      $('#interest_config_id').val('');
+      $('#interest_start_date').val('');
+      $('#interest_end_date').val('');
+    }
+  });
+
+  // 6. Set created_by dari user login (misal user_id disimpan di localStorage)
+  $('#created_by').val(localStorage.getItem('user_id') || '435c849a-8dd2-4724-bf4d-b0293f79fd56');
+
+  // 7. Submit form
+  $('#transferDanaForm').on('submit', function(e) {
+    e.preventDefault();
+    var form = $(this);
+
+    if (!form.parsley().isValid()) {
+      form.parsley().validate();
+      return;
+    }
+
+    // Build payload sesuai backend
+    var payload = {
+      source_account_id: $('#source_account_id').val(),
+      destination_account_id: $('#destination_account_id').val(),
+      amount: parseFloat($('#amount').val()),
+      description: $('#description').val(),
+      created_by: $('#created_by').val()
+    };
+    
+    // Jika bunga diterapkan, tambahkan field bunga ke root payload
+    if ($('#interest-section').is(':visible') && $('#apply_interest').is(':checked')) {
+      payload.apply_interest = true;
+      payload.interest_config_id = $('#interest_config_id').val();
+      payload.interest_start_date = $('#interest_start_date').val();
+      payload.interest_end_date = $('#interest_end_date').val();
+    } else {
+      payload.apply_interest = false;
+    }
+
+    $.ajax({
+      url: 'http://localhost:3000/api/transactions/transfer',
+      type: 'POST',
+      contentType: 'application/json',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      data: JSON.stringify(payload),
+      success: function(res) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Sukses',
+          text: 'Transfer dana berhasil!',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          location.reload();
+        });
+      },
+      error: function(xhr) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: xhr.responseJSON?.message || xhr.statusText
+        });
+      }
+    });
+  });
+});
+</script>
