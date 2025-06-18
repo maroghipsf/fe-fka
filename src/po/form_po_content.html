@@ -1,0 +1,141 @@
+<div class="page-heading">
+  <div class="page-title">
+    <div class="row">
+      <div class="col-12 col-md-6 order-md-1 order-last">
+        <h3>Form Purchase Order</h3>
+      </div>
+      <div class="col-12 col-md-6 order-md-2 order-first">
+        <nav
+          aria-label="breadcrumb"
+          class="breadcrumb-header float-start float-lg-end"
+        >
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Form Purchase Order
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <section id="purchase-order-form-section">
+    <div class="row match-height">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <form class="form" id="purchaseOrderForm" data-parsley-validate>
+                <div class="row">
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="project" class="form-label">Project</label>
+                      <input type="text" id="project" name="project" class="form-control"
+                             data-parsley-required="true" placeholder="Masukkan nama project (e.g., BEA,ANG TUK-PSRHLG)">
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="sdip_no" class="form-label">SDIP Nomor</label>
+                      <input type="text" id="sdip_no" name="sdip_no" class="form-control"
+                             data-parsley-required="true" placeholder="Masukkan nomor Purchase Order">
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="assigned_to" class="form-label">Nama Petugas</label>
+                      <input type="text" id="assigned_to" name="assigned_to" class="form-control"
+                             data-parsley-required="true" placeholder="Masukkan nama petugas (e.g., Budi, Joko)">
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="po_date" class="form-label">Tanggal PO</label>
+                      <input type="date" id="po_date" name="po_date" class="form-control"
+                             data-parsley-required="true">
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group mandatory">
+                      <label for="party_ton" class="form-label">Party TON</label>
+                      <input type="number" id="party_ton" name="party_ton" class="form-control"
+                             data-parsley-required="true" data-parsley-type="number" placeholder="Masukkan jumlah tonase">
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-12">
+                    <div class="form-group">
+                      <label for="description" class="form-label">Keterangan</label>
+                      <textarea id="description" name="description" class="form-control" placeholder="Catatan tambahan"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary me-1 mb-1" id="submitBtn">Submit</button>
+                    <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/parsleyjs"></script>
+<script>
+$(function() {
+  // Submit form
+  $('#purchaseOrderForm').on('submit', function(e) {
+    e.preventDefault();
+    var form = $(this);
+
+    if (!form.parsley().isValid()) {
+      form.parsley().validate();
+      return;
+    }
+
+    // Build payload sesuai backend
+    var payload = {
+      project: $('#project').val(),
+      sdip_no: $('#sdip_no').val(),
+      assigned_to: $('#assigned_to').val(),
+      party: $('#party').val(),
+      party_ton: $('#party_ton').val(),
+      po_date: $('#po_date').val(),
+      description: $('#description').val(),
+    };
+    
+    $.ajax({
+      url: 'http://localhost:3000/api/purchase-orders', // Sesuaikan dengan endpoint API Anda
+      type: 'POST',
+      contentType: 'application/json',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      data: JSON.stringify(payload),
+      success: function(res) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Sukses',
+          text: 'Purchase Order berhasil disimpan!',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          location.reload(); // Atau redirect ke halaman daftar PO
+        });
+      },
+      error: function(xhr) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: xhr.responseJSON?.message || xhr.statusText
+        });
+      }
+    });
+  });
+});
+</script>

@@ -1,0 +1,318 @@
+<div class="page-heading"><div class="page-title"><div class="row"><div class="col-12 col-md-6 order-md-1 order-last"><h3>List Purchase Order</h3></div><div class="col-12 col-md-6 order-md-2 order-first"><nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li><li class="breadcrumb-item active" aria-current="page">List Purchase Order</li></ol></nav></div></div></div><section class="section"><div class="card"><div class="card-body"><table class="table table-striped" id="table1"><thead><tr><th>No.</th><th>Project</th><th>SDIP Number</th><th>Tanggal PO</th><th>Party Ton</th><th>Keterangan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="po-table-body"></tbody></table><!-- Modal WO Scheduling --><div class="modal fade" id="modalWOScheduling" tabindex="-1" aria-labelledby="modalWOSchedulingLabel" aria-hidden="true"><div class="modal-dialog modal-md modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-info text-white"><h5 class="modal-title" id="modalWOSchedulingLabel"><i class="bi bi-calendar-event me-2"></i>Penjadwalan Working Order</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><table class="table table-striped"><thead><tr><th>Gudang Pengirim</th><th>Gudang Penerima</th><th>Tanggal Pickup</th><th>Party</th></tr></thead><tbody id="wo-table-body"><!-- Data akan diisi secara dinamis --></tbody><form id="woSchedulingForm"><div class="modal-body"><input type="hidden" id="wo-po-id" name="po_id"><div class="mb-3"><label for="sender-warehouse-id" class="form-label">Pilih Gudang Pengirim</label> <select class="form-select" id="sender-warehouse-id" name="sender_warehouse_id" required><option value="">-- Pilih Gudang --</option><!-- Options will be populated dynamically --></select></div><div class="mb-3"><label for="receiver-warehouse-id" class="form-label">Pilih Gudang Penerima</label> <select class="form-select" id="receiver-warehouse-id" name="receiver_warehouse_id" required><option value="">-- Pilih Gudang --</option><!-- Options will be populated dynamically --></select></div><div class="mb-3"><label for="scheduled-pickup-time" class="form-label">Tanggal Pickup</label> <input type="date" class="form-control" id="scheduled-pickup-time" name="scheduled_pickup_time" required></div><div class="mb-3"><label for="net-weight-kg" class="form-label">Party</label> <input type="text" class="form-control" id="net-weight-kg" name="net_weight_kg" placeholder="Masukkan Party" required></div></div><div class="modal-footer"><button type="submit" class="btn btn-primary">Simpan</button> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button></div></form></table></div></div></div></div></div></section></div><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script><script>// URL dasar API Anda
+    const API_BASE_URL = 'http://localhost:3000/api';
+    // Ambil token dari localStorage sekali saja
+    const TOKEN = localStorage.getItem('token');
+    // Variabel global untuk menyimpan semua data gudang
+    let allWarehouses = [];
+
+    // Fungsi pembantu untuk memformat tanggal ke 'DD/MM/YYYY'
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
+    // Fungsi pembantu untuk memformat tanggal dan waktu ke 'DD/MM/YYYY HH:MM:SS'
+    function formatDateTime(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    // Fungsi pembantu untuk memformat mata uang Rupiah (jika Anda memiliki detail PO yang menggunakan ini)
+    function formatRupiah(amount) {
+        if (amount == null || isNaN(amount)) return '-';
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(amount);
+    }
+
+    // --- Fungsi Utama untuk Memuat Data PO ---
+    async function loadPOData() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/purchase-orders`, { // Menggunakan /api/purchase-orders
+                headers: { 'Authorization': 'Bearer ' + TOKEN }
+            });
+
+            if (!response.ok) {
+                // Tangani error HTTP seperti 401 Unauthorized
+                if (response.status === 401) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Sesi Berakhir',
+                        text: 'Sesi Anda telah berakhir. Silakan login kembali.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/login.html'; // Sesuaikan URL login Anda
+                    });
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const tbody = document.getElementById('po-table-body');
+            tbody.innerHTML = ''; // Kosongkan tbody
+
+            if (!result.data || !Array.isArray(result.data) || result.data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center">Data Purchase Order tidak ditemukan</td></tr>`;
+            } else {
+                let counter = 1;
+                result.data.forEach(po => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${counter++}</td>
+                            <td>${po.project || ''}</td> <td>${po.sdip_no || ''}</td> <td>${formatDate(po.po_date)}</td>
+                            <td>${po.party_ton || ''}</td> <td>${po.description || ''}</td>
+                            <td>${po.status_po || ''}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" title="Edit" onclick="editPO('${po.po_id}')">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" title="WO" onclick="openWOModal('${po.po_id}')">
+                                    <i class="bi bi-calendar-event"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" title="Delete" onclick="deletePO('${po.po_id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        } catch (err) {
+            console.error("Error fetching PO data:", err);
+            Swal.fire('Error', `Gagal memuat data Purchase Order: ${err.message || ''}.`, 'error');
+            document.getElementById('po-table-body').innerHTML = `<tr><td colspan="8" class="text-center">Gagal memuat data</td></tr>`;
+        }
+    }
+
+    // Panggil fungsi saat DOM selesai dimuat
+    document.addEventListener('DOMContentLoaded', loadPOData);
+
+    // --- Fungsi untuk Membuka Modal Penjadwalan WO ---
+    async function openWOModal(poId) {
+        const response = await fetch(`${API_BASE_URL}/working-orders/${poId}`, {
+            headers: { 'Authorization': 'Bearer ' + TOKEN }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const res = await response.json();
+
+        if (res.data.length === 0) {
+            $('#wo-po-id').val(poId);
+            // Clear previous selections and input values
+            $('#sender-warehouse-id').val('');
+            $('#receiver-warehouse-id').val('');
+            $('#scheduled-pickup-time').val('');
+            $('#net-weight-kg').val('');
+
+            try {
+                // Ambil data gudang dari API
+                const response = await fetch(`${API_BASE_URL}/warehouses`, {
+                    headers: { 'Authorization': 'Bearer ' + TOKEN }
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Simpan semua gudang ke variabel global
+                allWarehouses = data.data && Array.isArray(data.data) ? data.data : [];
+
+                // Isi dropdown gudang (pengirim dan penerima)
+                populateWarehouseDropdowns();
+
+                // Tampilkan modal
+                var modal = new bootstrap.Modal(document.getElementById('modalWOScheduling'));
+                modal.show();
+
+            } catch (err) {
+                console.error("Error fetching warehouse data:", err);
+                Swal.fire('Error', `Gagal memuat data gudang: ${err.message || ''}.`, 'error');
+            }
+        }else {
+            Swal.fire('Info', 'Working Order sudah ada untuk PO ini.', 'info');
+        }
+    }
+
+    // Fungsi untuk mengisi ulang dropdown gudang
+    function populateWarehouseDropdowns() {
+        const senderSelect = $('#sender-warehouse-id');
+        const receiverSelect = $('#receiver-warehouse-id');
+
+        // Simpan nilai yang saat ini terpilih sebelum di-reset
+        const currentSenderValue = senderSelect.val();
+        const currentReceiverValue = receiverSelect.val();
+
+        senderSelect.empty();
+        receiverSelect.empty();
+
+        senderSelect.append('<option value="">-- Pilih Gudang Pengirim --</option>');
+        receiverSelect.append('<option value="">-- Pilih Gudang Penerima --</option>');
+
+        allWarehouses.forEach(wh => {
+            senderSelect.append(`<option value="${wh.warehouse_id}">${wh.warehouse_name}</option>`);
+        });
+
+        // Panggil updateReceiverOptions setelah senderSelect diisi
+        updateReceiverOptions(currentSenderValue);
+
+        // Set kembali nilai yang terpilih jika valid
+        if (currentSenderValue) {
+            senderSelect.val(currentSenderValue);
+        }
+        // Pastikan receiverValue masih valid setelah updateReceiverOptions dipanggil
+        if (currentReceiverValue && receiverSelect.find(`option[value="${currentReceiverValue}"]`).length) {
+            receiverSelect.val(currentReceiverValue);
+        } else {
+            receiverSelect.val(''); // Reset jika tidak valid
+        }
+    }
+
+    // Fungsi untuk memperbarui opsi gudang penerima berdasarkan gudang pengirim yang dipilih
+    function updateReceiverOptions(selectedSenderId) {
+        const receiverSelect = $('#receiver-warehouse-id');
+        const currentReceiverValue = receiverSelect.val();
+        receiverSelect.empty();
+        receiverSelect.append('<option value="">-- Pilih Gudang Penerima --</option>');
+
+        allWarehouses.forEach(wh => {
+            if (wh.warehouse_id !== selectedSenderId) { // Jangan tampilkan gudang pengirim sebagai gudang penerima
+                receiverSelect.append(`<option value="${wh.warehouse_id}">${wh.warehouse_name}</option>`);
+            }
+        });
+
+        // Set kembali nilai penerima jika masih valid setelah filter
+        if (currentReceiverValue && currentReceiverValue !== selectedSenderId && receiverSelect.find(`option[value="${currentReceiverValue}"]`).length) {
+            receiverSelect.val(currentReceiverValue);
+        } else {
+            receiverSelect.val(''); // Reset jika tidak valid
+        }
+    }
+
+    // --- Event Listener untuk Perubahan Gudang Pengirim ---
+    $(document).ready(function() {
+        $('#sender-warehouse-id').on('change', function() {
+            const selectedSenderId = $(this).val();
+            updateReceiverOptions(selectedSenderId);
+        });
+    });
+
+    // --- Handle Form Submission untuk Penjadwalan WO ---
+    $('#woSchedulingForm').on('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = {
+            po_id: $('#wo-po-id').val(),
+            sender_warehouse_id: $('#sender-warehouse-id').val(),
+            receiver_warehouse_id: $('#receiver-warehouse-id').val(),
+            scheduled_pickup_time: $('#scheduled-pickup-time').val(),
+            net_weight_kg: $('#net-weight-kg').val(),
+        };
+        console.log(formData);
+        // Validasi sisi klien
+        if (!formData.po_id || !formData.scheduled_pickup_time || !formData.sender_warehouse_id || !formData.receiver_warehouse_id || !formData.net_weight_kg) {
+            Swal.fire('Peringatan', 'Semua field wajib diisi!', 'warning');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/working-orders`, { // Endpoint POST untuk WO
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + TOKEN
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Terjadi kesalahan saat menyimpan penjadwalan WO. Status: ${response.status}`);
+            }
+
+            const res = await response.json();
+            Swal.fire('Berhasil', res.message || 'Penjadwalan Working Order berhasil disimpan.', 'success')
+                .then(() => {
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('modalWOScheduling'));
+                    modal.hide();
+                    loadPOData(); // Muat ulang data PO untuk memperbarui status
+                });
+
+        } catch (err) {
+            console.error("Error submitting WO scheduling:", err);
+            Swal.fire('Gagal', err.message, 'error');
+        }
+    });
+
+    // --- Fungsi Edit PO (Placeholder) ---
+    function editPO(id) {
+        // Implementasi untuk mengarahkan ke halaman edit dengan ID PO
+        // Contoh: window.location.href = `/form_po_content.html?id=${id}`;
+        Swal.fire('Fitur Edit', `Arahkan ke form edit PO dengan ID: ${id}`, 'info');
+    }
+
+    // --- Fungsi Hapus PO ---
+    function deletePO(poId) {
+        Swal.fire({
+            title: 'Yakin hapus data ini?',
+            text: 'Data PO akan dihapus secara permanen!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/purchase-orders/${poId}`, { // Endpoint DELETE untuk PO
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer ' + TOKEN }
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `Gagal menghapus data PO. Status: ${response.status}`);
+                    }
+
+                    const res = await response.json();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: res.message || 'Data PO berhasil dihapus!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        loadPOData(); // Muat ulang data PO setelah penghapusan
+                    });
+
+                } catch (err) {
+                    console.error("Error deleting PO:", err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: err.message || 'Terjadi kesalahan saat menghapus data PO.'
+                    });
+                }
+            }
+        });
+    }</script>

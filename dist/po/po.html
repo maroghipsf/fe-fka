@@ -1,0 +1,386 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard</title><link rel="shortcut icon" href="/assets/compiled/svg/favicon.svg" type="image/x-icon"><link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSJ2d78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLnNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLnNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLnNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1zbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHbob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94cGFja2V0Pgpl57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwNamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC" type="image/png"><link rel="stylesheet" href="/assets/compiled/css/app.css"><link rel="stylesheet" href="/assets/compiled/css/app-dark.css"><link rel="stylesheet" href="/assets/compiled/css/iconly.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><link rel="stylesheet" href="/assets/extensions/simple-datatables/style.css"><link rel="stylesheet" href="/assets/compiled/css/table-datatable.css"></head><body><script src="/assets/static/js/initTheme.js"></script><div id="app"><div id="sidebar"><div class="sidebar-wrapper active"><div class="sidebar-header position-relative"><div class="d-flex justify-content-between align-items-center"><div class="logo d-flex align-items-center"><a href="/index.html"><img src="/assets/compiled/svg/logo.svg" alt="Logo"></a></div><!-- Logout icon di pojok kanan --><div><a id="logout-btn" title="Logout" class="d-inline-block"><i class="bi bi-box-arrow-right fs-4"></i></a></div><div class="sidebar-toggler x"><a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a></div></div></div><div class="sidebar-menu"><ul class="menu"><!-- 1. Beranda (Dashboard) --><li class="sidebar-item"><a href="/index.html" class="sidebar-link"><i class="bi bi-house-door"></i> <span>Beranda</span></a></li><!-- 2. Keuangan --><li class="sidebar-title">Keuangan</li><li class="sidebar-item"><a href="/keuangan/ringkasan.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> <span>Ringkasan Keuangan</span></a></li><li class="sidebar-item"><a href="/keuangan/riwayat-transaksi.html" class="sidebar-link"><i class="bi bi-clock-history"></i> <span>Riwayat Transaksi Bank</span></a></li><li class="sidebar-item"><a href="/keuangan/transfer-dana.html" class="sidebar-link"><i class="bi bi-arrow-left-right"></i> <span>Transfer Dana</span></a></li><li class="sidebar-item has-sub"><a href="#" class="sidebar-link"><i class="bi bi-graph-up"></i> <span>Laporan Keuangan</span></a><ul class="submenu"><li class="submenu-item"><a href="/keuangan/laporan-arus-kas.html" class="submenu-link">Laporan Arus Kas</a></li><li class="submenu-item"><a href="/keuangan/laporan-laba-rugi.html" class="submenu-link">Laporan Laba Rugi</a></li><li class="submenu-item"><a href="/keuangan/laporan-pengeluaran-wo.html" class="submenu-link">Laporan Pengeluaran WO</a></li><li class="submenu-item"><a href="/keuangan/laporan-pembayaran-invoice.html" class="submenu-link">Laporan Pembayaran Invoice</a></li></ul></li><!-- 3. Manajemen PO --><li class="sidebar-title">Manajemen PO</li><li class="sidebar-item"><a href="/po/po.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> <span>Purchase Order (PO)</span></a></li><!-- <li class="sidebar-item">
+                    <a href="/wo/daftar-wo.html" class="sidebar-link">
+                        <i class="bi bi-truck"></i>
+                        <span>Working Order (WO)</span>
+                    </a>
+                </li> --><!-- 4. Manajemen Invoice --><li class="sidebar-title">Manajemen Invoice</li><li class="sidebar-item"><a href="/invoice/daftar-invoice.html" class="sidebar-link"><i class="bi bi-receipt"></i> <span>Daftar Invoice</span></a></li><!-- 5. Data Master --><li class="sidebar-title">Data Master</li><li class="sidebar-item"><a href="/master/gudang.html" class="sidebar-link"><i class="bi bi-building"></i> <span>Manajemen Gudang</span></a></li><!-- <li class="sidebar-item">
+                    <a href="/master/pemasok.html" class="sidebar-link">
+                        <i class="bi bi-person-lines-fill"></i>
+                        <span>Manajemen Pemasok</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/master/item.html" class="sidebar-link">
+                        <i class="bi bi-box"></i>
+                        <span>Manajemen Item (Barang/Jasa)</span>
+                    </a>
+                </li> --><li class="sidebar-item"><a href="/master/akun-bank.html" class="sidebar-link"><i class="bi bi-bank"></i> <span>Manajemen Akun Bank</span></a></li><li class="sidebar-item"><a href="/master/manajemen-bunga.html" class="sidebar-link"><i class="bi bi-percent"></i> <span>Manajemen Bunga Bank</span></a></li><!-- 6. Pengaturan & Audit --><li class="sidebar-title">Pengaturan & Audit</li><li class="sidebar-item"><a href="/settings/users.html" class="sidebar-link"><i class="bi bi-people-fill"></i> <span>Manajemen Pengguna</span></a></li><li class="sidebar-item"><a href="/settings/roles.html" class="sidebar-link"><i class="bi bi-shield-lock"></i> <span>Manajemen Peran & Hak Akses</span></a></li><li class="sidebar-item"><a href="/settings/audit-trail.html" class="sidebar-link"><i class="bi bi-activity"></i> <span>Audit Trail</span></a></li><li class="sidebar-item"><a href="/settings/notifikasi.html" class="sidebar-link"><i class="bi bi-bell"></i> <span>Notifikasi</span></a></li></ul></div></div></div><div id="main"><header class="mb-3"><a href="#" class="burger-btn d-block d-xl-none"><i class="bi bi-justify fs-3"></i></a></header><div class="page-heading"><div class="page-title"><div class="row"><div class="col-12 col-md-6 order-md-1 order-last"><h3>Form Purchase Order</h3></div><div class="col-12 col-md-6 order-md-2 order-first"><nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li><li class="breadcrumb-item active" aria-current="page">Form Purchase Order</li></ol></nav></div></div></div><section id="purchase-order-form-section"><div class="row match-height"><div class="col-12"><div class="card"><div class="card-content"><div class="card-body"><form class="form" id="purchaseOrderForm" data-parsley-validate><div class="row"><div class="col-md-6 col-12"><div class="form-group mandatory"><label for="project" class="form-label">Project</label> <input type="text" id="project" name="project" class="form-control" data-parsley-required="true" placeholder="Masukkan nama project (e.g., BEA,ANG TUK-PSRHLG)"></div></div><div class="col-md-6 col-12"><div class="form-group mandatory"><label for="sdip_no" class="form-label">SDIP Nomor</label> <input type="text" id="sdip_no" name="sdip_no" class="form-control" data-parsley-required="true" placeholder="Masukkan nomor Purchase Order"></div></div><div class="col-md-6 col-12"><div class="form-group mandatory"><label for="assigned_to" class="form-label">Nama Petugas</label> <input type="text" id="assigned_to" name="assigned_to" class="form-control" data-parsley-required="true" placeholder="Masukkan nama petugas (e.g., Budi, Joko)"></div></div><div class="col-md-6 col-12"><div class="form-group mandatory"><label for="po_date" class="form-label">Tanggal PO</label> <input type="date" id="po_date" name="po_date" class="form-control" data-parsley-required="true"></div></div><div class="col-md-6 col-12"><div class="form-group mandatory"><label for="party_ton" class="form-label">Party TON</label> <input type="number" id="party_ton" name="party_ton" class="form-control" data-parsley-required="true" data-parsley-type="number" placeholder="Masukkan jumlah tonase"></div></div><div class="col-md-6 col-12"><div class="form-group"><label for="description" class="form-label">Keterangan</label> <textarea id="description" name="description" class="form-control" placeholder="Catatan tambahan"></textarea></div></div></div><div class="row mt-4"><div class="col-12 d-flex justify-content-end"><button type="submit" class="btn btn-primary me-1 mb-1" id="submitBtn">Submit</button> <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button></div></div></form></div></div></div></div></div></section></div><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script src="https://cdn.jsdelivr.net/npm/parsleyjs"></script><script>$(function() {
+  // Submit form
+  $('#purchaseOrderForm').on('submit', function(e) {
+    e.preventDefault();
+    var form = $(this);
+
+    if (!form.parsley().isValid()) {
+      form.parsley().validate();
+      return;
+    }
+
+    // Build payload sesuai backend
+    var payload = {
+      project: $('#project').val(),
+      sdip_no: $('#sdip_no').val(),
+      assigned_to: $('#assigned_to').val(),
+      party: $('#party').val(),
+      party_ton: $('#party_ton').val(),
+      po_date: $('#po_date').val(),
+      description: $('#description').val(),
+    };
+    
+    $.ajax({
+      url: 'http://localhost:3000/api/purchase-orders', // Sesuaikan dengan endpoint API Anda
+      type: 'POST',
+      contentType: 'application/json',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      data: JSON.stringify(payload),
+      success: function(res) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Sukses',
+          text: 'Purchase Order berhasil disimpan!',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          location.reload(); // Atau redirect ke halaman daftar PO
+        });
+      },
+      error: function(xhr) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: xhr.responseJSON?.message || xhr.statusText
+        });
+      }
+    });
+  });
+});</script><div class="page-heading"><div class="page-title"><div class="row"><div class="col-12 col-md-6 order-md-1 order-last"><h3>List Purchase Order</h3></div><div class="col-12 col-md-6 order-md-2 order-first"><nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li><li class="breadcrumb-item active" aria-current="page">List Purchase Order</li></ol></nav></div></div></div><section class="section"><div class="card"><div class="card-body"><table class="table table-striped" id="table1"><thead><tr><th>No.</th><th>Project</th><th>SDIP Number</th><th>Tanggal PO</th><th>Party Ton</th><th>Keterangan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="po-table-body"></tbody></table><!-- Modal WO Scheduling --><div class="modal fade" id="modalWOScheduling" tabindex="-1" aria-labelledby="modalWOSchedulingLabel" aria-hidden="true"><div class="modal-dialog modal-md modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-info text-white"><h5 class="modal-title" id="modalWOSchedulingLabel"><i class="bi bi-calendar-event me-2"></i>Penjadwalan Working Order</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><table class="table table-striped"><thead><tr><th>Gudang Pengirim</th><th>Gudang Penerima</th><th>Tanggal Pickup</th><th>Party</th></tr></thead><tbody id="wo-table-body"><!-- Data akan diisi secara dinamis --></tbody><form id="woSchedulingForm"><div class="modal-body"><input type="hidden" id="wo-po-id" name="po_id"><div class="mb-3"><label for="sender-warehouse-id" class="form-label">Pilih Gudang Pengirim</label> <select class="form-select" id="sender-warehouse-id" name="sender_warehouse_id" required><option value="">-- Pilih Gudang --</option><!-- Options will be populated dynamically --></select></div><div class="mb-3"><label for="receiver-warehouse-id" class="form-label">Pilih Gudang Penerima</label> <select class="form-select" id="receiver-warehouse-id" name="receiver_warehouse_id" required><option value="">-- Pilih Gudang --</option><!-- Options will be populated dynamically --></select></div><div class="mb-3"><label for="scheduled-pickup-time" class="form-label">Tanggal Pickup</label> <input type="date" class="form-control" id="scheduled-pickup-time" name="scheduled_pickup_time" required></div><div class="mb-3"><label for="net-weight-kg" class="form-label">Party</label> <input type="text" class="form-control" id="net-weight-kg" name="net_weight_kg" placeholder="Masukkan Party" required></div></div><div class="modal-footer"><button type="submit" class="btn btn-primary">Simpan</button> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button></div></form></table></div></div></div></div></div></section></div><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script><script>// URL dasar API Anda
+    const API_BASE_URL = 'http://localhost:3000/api';
+    // Ambil token dari localStorage sekali saja
+    const TOKEN = localStorage.getItem('token');
+    // Variabel global untuk menyimpan semua data gudang
+    let allWarehouses = [];
+
+    // Fungsi pembantu untuk memformat tanggal ke 'DD/MM/YYYY'
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
+    // Fungsi pembantu untuk memformat tanggal dan waktu ke 'DD/MM/YYYY HH:MM:SS'
+    function formatDateTime(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    // Fungsi pembantu untuk memformat mata uang Rupiah (jika Anda memiliki detail PO yang menggunakan ini)
+    function formatRupiah(amount) {
+        if (amount == null || isNaN(amount)) return '-';
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(amount);
+    }
+
+    // --- Fungsi Utama untuk Memuat Data PO ---
+    async function loadPOData() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/purchase-orders`, { // Menggunakan /api/purchase-orders
+                headers: { 'Authorization': 'Bearer ' + TOKEN }
+            });
+
+            if (!response.ok) {
+                // Tangani error HTTP seperti 401 Unauthorized
+                if (response.status === 401) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Sesi Berakhir',
+                        text: 'Sesi Anda telah berakhir. Silakan login kembali.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/login.html'; // Sesuaikan URL login Anda
+                    });
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const tbody = document.getElementById('po-table-body');
+            tbody.innerHTML = ''; // Kosongkan tbody
+
+            if (!result.data || !Array.isArray(result.data) || result.data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center">Data Purchase Order tidak ditemukan</td></tr>`;
+            } else {
+                let counter = 1;
+                result.data.forEach(po => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${counter++}</td>
+                            <td>${po.project || ''}</td> <td>${po.sdip_no || ''}</td> <td>${formatDate(po.po_date)}</td>
+                            <td>${po.party_ton || ''}</td> <td>${po.description || ''}</td>
+                            <td>${po.status_po || ''}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" title="Edit" onclick="editPO('${po.po_id}')">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" title="WO" onclick="openWOModal('${po.po_id}')">
+                                    <i class="bi bi-calendar-event"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" title="Delete" onclick="deletePO('${po.po_id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        } catch (err) {
+            console.error("Error fetching PO data:", err);
+            Swal.fire('Error', `Gagal memuat data Purchase Order: ${err.message || ''}.`, 'error');
+            document.getElementById('po-table-body').innerHTML = `<tr><td colspan="8" class="text-center">Gagal memuat data</td></tr>`;
+        }
+    }
+
+    // Panggil fungsi saat DOM selesai dimuat
+    document.addEventListener('DOMContentLoaded', loadPOData);
+
+    // --- Fungsi untuk Membuka Modal Penjadwalan WO ---
+    async function openWOModal(poId) {
+        const response = await fetch(`${API_BASE_URL}/working-orders/${poId}`, {
+            headers: { 'Authorization': 'Bearer ' + TOKEN }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const res = await response.json();
+
+        if (res.data.length === 0) {
+            $('#wo-po-id').val(poId);
+            // Clear previous selections and input values
+            $('#sender-warehouse-id').val('');
+            $('#receiver-warehouse-id').val('');
+            $('#scheduled-pickup-time').val('');
+            $('#net-weight-kg').val('');
+
+            try {
+                // Ambil data gudang dari API
+                const response = await fetch(`${API_BASE_URL}/warehouses`, {
+                    headers: { 'Authorization': 'Bearer ' + TOKEN }
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Simpan semua gudang ke variabel global
+                allWarehouses = data.data && Array.isArray(data.data) ? data.data : [];
+
+                // Isi dropdown gudang (pengirim dan penerima)
+                populateWarehouseDropdowns();
+
+                // Tampilkan modal
+                var modal = new bootstrap.Modal(document.getElementById('modalWOScheduling'));
+                modal.show();
+
+            } catch (err) {
+                console.error("Error fetching warehouse data:", err);
+                Swal.fire('Error', `Gagal memuat data gudang: ${err.message || ''}.`, 'error');
+            }
+        }else {
+            Swal.fire('Info', 'Working Order sudah ada untuk PO ini.', 'info');
+        }
+    }
+
+    // Fungsi untuk mengisi ulang dropdown gudang
+    function populateWarehouseDropdowns() {
+        const senderSelect = $('#sender-warehouse-id');
+        const receiverSelect = $('#receiver-warehouse-id');
+
+        // Simpan nilai yang saat ini terpilih sebelum di-reset
+        const currentSenderValue = senderSelect.val();
+        const currentReceiverValue = receiverSelect.val();
+
+        senderSelect.empty();
+        receiverSelect.empty();
+
+        senderSelect.append('<option value="">-- Pilih Gudang Pengirim --</option>');
+        receiverSelect.append('<option value="">-- Pilih Gudang Penerima --</option>');
+
+        allWarehouses.forEach(wh => {
+            senderSelect.append(`<option value="${wh.warehouse_id}">${wh.warehouse_name}</option>`);
+        });
+
+        // Panggil updateReceiverOptions setelah senderSelect diisi
+        updateReceiverOptions(currentSenderValue);
+
+        // Set kembali nilai yang terpilih jika valid
+        if (currentSenderValue) {
+            senderSelect.val(currentSenderValue);
+        }
+        // Pastikan receiverValue masih valid setelah updateReceiverOptions dipanggil
+        if (currentReceiverValue && receiverSelect.find(`option[value="${currentReceiverValue}"]`).length) {
+            receiverSelect.val(currentReceiverValue);
+        } else {
+            receiverSelect.val(''); // Reset jika tidak valid
+        }
+    }
+
+    // Fungsi untuk memperbarui opsi gudang penerima berdasarkan gudang pengirim yang dipilih
+    function updateReceiverOptions(selectedSenderId) {
+        const receiverSelect = $('#receiver-warehouse-id');
+        const currentReceiverValue = receiverSelect.val();
+        receiverSelect.empty();
+        receiverSelect.append('<option value="">-- Pilih Gudang Penerima --</option>');
+
+        allWarehouses.forEach(wh => {
+            if (wh.warehouse_id !== selectedSenderId) { // Jangan tampilkan gudang pengirim sebagai gudang penerima
+                receiverSelect.append(`<option value="${wh.warehouse_id}">${wh.warehouse_name}</option>`);
+            }
+        });
+
+        // Set kembali nilai penerima jika masih valid setelah filter
+        if (currentReceiverValue && currentReceiverValue !== selectedSenderId && receiverSelect.find(`option[value="${currentReceiverValue}"]`).length) {
+            receiverSelect.val(currentReceiverValue);
+        } else {
+            receiverSelect.val(''); // Reset jika tidak valid
+        }
+    }
+
+    // --- Event Listener untuk Perubahan Gudang Pengirim ---
+    $(document).ready(function() {
+        $('#sender-warehouse-id').on('change', function() {
+            const selectedSenderId = $(this).val();
+            updateReceiverOptions(selectedSenderId);
+        });
+    });
+
+    // --- Handle Form Submission untuk Penjadwalan WO ---
+    $('#woSchedulingForm').on('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = {
+            po_id: $('#wo-po-id').val(),
+            sender_warehouse_id: $('#sender-warehouse-id').val(),
+            receiver_warehouse_id: $('#receiver-warehouse-id').val(),
+            scheduled_pickup_time: $('#scheduled-pickup-time').val(),
+            net_weight_kg: $('#net-weight-kg').val(),
+        };
+        console.log(formData);
+        // Validasi sisi klien
+        if (!formData.po_id || !formData.scheduled_pickup_time || !formData.sender_warehouse_id || !formData.receiver_warehouse_id || !formData.net_weight_kg) {
+            Swal.fire('Peringatan', 'Semua field wajib diisi!', 'warning');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/working-orders`, { // Endpoint POST untuk WO
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + TOKEN
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Terjadi kesalahan saat menyimpan penjadwalan WO. Status: ${response.status}`);
+            }
+
+            const res = await response.json();
+            Swal.fire('Berhasil', res.message || 'Penjadwalan Working Order berhasil disimpan.', 'success')
+                .then(() => {
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('modalWOScheduling'));
+                    modal.hide();
+                    loadPOData(); // Muat ulang data PO untuk memperbarui status
+                });
+
+        } catch (err) {
+            console.error("Error submitting WO scheduling:", err);
+            Swal.fire('Gagal', err.message, 'error');
+        }
+    });
+
+    // --- Fungsi Edit PO (Placeholder) ---
+    function editPO(id) {
+        // Implementasi untuk mengarahkan ke halaman edit dengan ID PO
+        // Contoh: window.location.href = `/form_po_content.html?id=${id}`;
+        Swal.fire('Fitur Edit', `Arahkan ke form edit PO dengan ID: ${id}`, 'info');
+    }
+
+    // --- Fungsi Hapus PO ---
+    function deletePO(poId) {
+        Swal.fire({
+            title: 'Yakin hapus data ini?',
+            text: 'Data PO akan dihapus secara permanen!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/purchase-orders/${poId}`, { // Endpoint DELETE untuk PO
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer ' + TOKEN }
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `Gagal menghapus data PO. Status: ${response.status}`);
+                    }
+
+                    const res = await response.json();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: res.message || 'Data PO berhasil dihapus!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        loadPOData(); // Muat ulang data PO setelah penghapusan
+                    });
+
+                } catch (err) {
+                    console.error("Error deleting PO:", err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: err.message || 'Terjadi kesalahan saat menghapus data PO.'
+                    });
+                }
+            }
+        });
+    }</script><footer><div class="footer clearfix mb-0 text-muted"><div class="float-start"><p>2023 &copy; Mazer</p></div><div class="float-end"><p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span> by <a href="https://saugi.me">Saugi</a></p></div></div></footer></div></div><script src="/assets/static/js/components/dark.js"></script><script src="/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script><script src="/assets/compiled/js/app.js"></script><script src="/assets/static/js/auth-guard.js"></script><script>$(document).on('click', '#logout-btn', function(e) {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = '/auth-login.html';
+  });</script><script src="/assets/static/js/pages/form-element-select.js"></script><script src="/assets/extensions/simple-datatables/umd/simple-datatables.js"></script><script src="/assets/static/js/pages/simple-datatables.js"></script><script src="/assets/extensions/jquery/jquery.min.js"></script><script src="/assets/extensions/parsleyjs/parsley.min.js"></script><script src="/assets/static/js/pages/parsley.js"></script><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script></body></html>
