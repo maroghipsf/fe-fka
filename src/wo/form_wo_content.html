@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    @@include('_style.html')
+    <link rel="stylesheet" href="/assets/extensions/simple-datatables/style.css">
+    <link rel="stylesheet" href="/assets/compiled/css/table-datatable.css">
+    <style>
+        .wo-card-container {
+            margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .wo-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .wo-card-header h5 {
+            margin-bottom: 0;
+            color: #3f51b5; /* Primary color for WO title */
+        }
+        .event-table-responsive {
+            overflow-x: auto;
+        }
+        .event-table th, .event-table td {
+            white-space: nowrap; /* Prevent wrapping for event table */
+        }
+        .signature-pad-container {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .signature-pad {
+            border: 1px dashed #ced4da;
+            width: 100%;
+            height: 200px; /* Adjust height as needed */
+            background-color: #f8f9fa;
+        }
+        .signature-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <script src="/assets/static/js/initTheme.js"></script>
+    <div id="app">
+
+        @@include('_sidebar.html')
+        <div id="main">
+            @@include('_header.html')
+            
+            <div class="page-heading">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12 col-md-8 order-md-1 order-last">
+                            <h3 class="d-flex align-items-center">
+                                Update Working Order
+                                <small class="text-muted ms-3 fs-6">
+                                    PO Status: <span id="display-po-status">Loading...</span> | WO ID: <span id="display-wo-status">Loading...</span>
+                                </small>
+                            </h3>
+                        </div>
+                        <div class="col-12 col-md-4 order-md-2 order-first">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="/po.html">List Purchase Order</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Create Working Order</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <section id="update-wo-form-section">
+                    <div class="row match-height">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <form class="form" id="updateWOForm" data-parsley-validate>
+                                            <input type="hidden" id="wo-id" name="wo_id" />
+                                            <input type="hidden" id="po-id" name="po_id" />
+                                            <input type="hidden" id="signature-data-url" name="signature_data_url" />
+                                            <input type="hidden" id="current-signature-url" name="current_signature_url" />
+                                            <input type="hidden" id="current-photo-url" name="current_photo_url" />
+                                            <div class="row">
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mandatory">
+                                                        <label for="sender-warehouse-id" class="form-label">Gudang Pengirim</label>
+                                                        <select class="form-select" id="sender-warehouse-id" name="sender_warehouse_id" required data-parsley-required="true">
+                                                            <option value="">-- Pilih Gudang Pengirim --</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mandatory">
+                                                        <label for="receiver-warehouse-id" class="form-label">Gudang Penerima</label>
+                                                        <select class="form-select" id="receiver-warehouse-id" name="receiver_warehouse_id" required data-parsley-required="true">
+                                                            <option value="">-- Pilih Gudang Penerima --</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mandatory">
+                                                        <label for="scheduled-pickup-time" class="form-label">Tanggal Pickup</label>
+                                                        <input type="date" class="form-control" id="scheduled-pickup-time" name="scheduled_pickup_time" required data-parsley-required="true" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group mandatory">
+                                                        <label for="net-weight-kg" class="form-label">Party</label>
+                                                        <input type="number" class="form-control" id="net-weight-kg" name="net_weight_kg" placeholder="Masukkan Party" required data-parsley-required="true" data-parsley-type="number" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label for="gross-weight-kg" class="form-label">Berat Bruto (kg)</label>
+                                                        <input type="number" class="form-control" id="gross-weight-kg" name="gross_weight_kg" placeholder="Masukkan Berat Bruto (khusus event Bongkar Muat Pengirim)" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label for="responsible-party" class="form-label">Pihak Bertanggung Jawab</label>
+                                                        <input type="text" class="form-control" id="responsible-party" name="responsible_party" placeholder="Nama pihak yang bertanggung jawab" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Tanda Tangan Digital</label>
+                                                        <div class="signature-pad-container">
+                                                            <canvas id="signature-pad" class="signature-pad"></canvas>
+                                                            <div class="signature-actions">
+                                                                <button type="button" class="btn btn-outline-danger btn-sm" id="clear-signature">Clear</button>
+                                                                <a id="download-signature" class="btn btn-outline-secondary btn-sm" download="signature.png" style="display:none;">Download</a>
+                                                            </div>
+                                                            <div id="existing-signature-preview" class="mt-2" style="display:none;">
+                                                                <p class="mb-1">Tanda Tangan Terakhir:</p>
+                                                                <img id="existing-signature-img" src="" alt="Existing Signature" style="max-width: 100%; height: auto; border: 1px solid #eee;"/>
+                                                                <button type="button" class="btn btn-sm btn-light-secondary mt-2" onclick="showSignaturePad()">Ubah Tanda Tangan</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label for="photo-file" class="form-label">Upload Foto</label>
+                                                        <input type="file" class="form-control" id="photo-file" name="photo_file" accept="image/*" />
+                                                        <div id="existing-photo-preview" class="mt-2" style="display:none;">
+                                                            <p class="mb-1">Foto Terakhir:</p>
+                                                            <img id="existing-photo-img" src="" alt="Existing Photo" style="max-width: 100%; height: auto; border: 1px solid #eee;"/>
+                                                            <button type="button" class="btn btn-sm btn-light-secondary mt-2" onclick="clearPhotoFile()">Hapus Foto</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="additional-notes" class="form-label">Catatan Tambahan</label>
+                                                        <textarea class="form-control" id="additional-notes" name="additional_notes" placeholder="Catatan tambahan untuk event"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-4">
+                                                <div class="col-12 d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-primary me-1 mb-1">Update WO</button>
+                                                    <button type="button" class="btn btn-light-secondary me-1 mb-1" onclick="window.close()">Batal</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            @@include('_footer.html')
+        </div>
+    </div>
+    @@include('_scripts.html')
+    <script src="/assets/static/js/pages/form-element-select.js"></script>
+    <script src="/assets/extensions/simple-datatables/umd/simple-datatables.js"></script>
+    <script src="/assets/static/js/pages/simple-datatables.js"></script>
+    <script src="/assets/extensions/jquery/jquery.min.js"></script>
+    <script src="/assets/extensions/parsleyjs/parsley.min.js"></script>
+    <script src="/assets/static/js/pages/parsley.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/parsleyjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.0/dist/signature_pad.umd.min.js"></script>
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        const TOKEN = localStorage.getItem('token');
+        let allWarehouses = [];
+        let signaturePad = null;
+        let isSignaturePadActive = true; // State for showing/hiding signature pad
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        async function fetchWarehouses() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/warehouses`, {
+                    headers: { 'Authorization': 'Bearer ' + TOKEN }
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+                const warehouseData = await response.json();
+                allWarehouses = warehouseData.data && Array.isArray(warehouseData.data) ? warehouseData.data : [];
+                populateWarehouseDropdowns(); // Initial population
+            } catch (err) {
+                console.error("Error fetching warehouses:", err);
+                Swal.fire('Error', `Gagal memuat data gudang: ${err.message || ''}.`, 'error');
+            }
+        }
+
+        function populateWarehouseDropdowns(selectedSenderId = null, selectedReceiverId = null) {
+            const senderSelect = $('#sender-warehouse-id');
+            const receiverSelect = $('#receiver-warehouse-id');
+
+            senderSelect.empty();
+            receiverSelect.empty();
+
+            senderSelect.append('<option value="">-- Pilih Gudang Pengirim --</option>');
+            receiverSelect.append('<option value="">-- Pilih Gudang Penerima --</option>');
+
+            allWarehouses.forEach(wh => {
+                senderSelect.append(`<option value="${wh.warehouse_id}">${wh.warehouse_name}</option>`);
+            });
+
+            if (selectedSenderId) {
+                updateReceiverOptions(selectedSenderId, selectedReceiverId);
+            } else {
+                allWarehouses.forEach(wh => {
+                    receiverSelect.append(`<option value="${wh.warehouse_id}">${wh.warehouse_name}</option>`);
+                });
+            }
+
+            if (selectedSenderId) senderSelect.val(selectedSenderId);
+            if (selectedReceiverId) receiverSelect.val(selectedReceiverId);
+        }
+
+        function updateReceiverOptions(selectedSenderId, currentReceiverValue = null) {
+            const receiverSelect = $('#receiver-warehouse-id');
+            receiverSelect.empty();
+            receiverSelect.append('<option value="">-- Pilih Gudang Penerima --</option>');
+
+            allWarehouses.forEach(wh => {
+                if (wh.warehouse_id !== selectedSenderId) {
+                    receiverSelect.append(`<option value="${wh.warehouse_id}">${wh.warehouse_name}</option>`);
+                }
+            });
+
+            if (currentReceiverValue && currentReceiverValue !== selectedSenderId && receiverSelect.find(`option[value="${currentReceiverValue}"]`).length) {
+                receiverSelect.val(currentReceiverValue);
+            } else {
+                receiverSelect.val('');
+            }
+        }
+
+        // Initialize Signature Pad
+        function initSignaturePad() {
+            const canvas = document.getElementById('signature-pad');
+            if (canvas) {
+                signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgb(248, 249, 250)', // Match background
+                    penColor: 'rgb(0, 0, 0)'
+                });
+
+                document.getElementById('clear-signature').addEventListener('click', function () {
+                    signaturePad.clear();
+                });
+
+                // Resize canvas on window resize to avoid distortion
+                function resizeCanvas() {
+                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                    canvas.width = canvas.offsetWidth * ratio;
+                    canvas.height = canvas.offsetHeight * ratio;
+                    canvas.getContext("2d").scale(ratio, ratio);
+                    signaturePad.clear(); // Clear the pad after resize to prevent stretched lines
+                }
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas(); // Initial resize
+            }
+        }
+
+        function showSignaturePad() {
+            $('#existing-signature-preview').hide();
+            $('.signature-pad-container').show();
+            isSignaturePadActive = true;
+            signaturePad.clear(); // Clear it to allow new signature
+            // If signaturePad was null, initialize it now
+            if (!signaturePad) {
+                initSignaturePad();
+            }
+        }
+
+        function hideSignaturePad() {
+            $('.signature-pad-container').hide();
+            isSignaturePadActive = false;
+        }
+
+        function clearPhotoFile() {
+            $('#photo-file').val(''); // Clear the selected file
+            $('#existing-photo-preview').hide(); // Hide preview
+            $('#current-photo-url').val(''); // Clear the hidden field
+        }
+
+        async function loadWOData(poId) {
+            try {
+                // Fetch PO details (for display in title)
+                const poResponse = await fetch(`${API_BASE_URL}/purchase-orders/${poId}`, {
+                    headers: { 'Authorization': 'Bearer ' + TOKEN }
+                });
+                if (poResponse.ok) {
+                    const poData = await poResponse.json();
+                    if (poData.data) {
+                        const po = poData.data;
+                        $('#display-po-status').text(po.status_po);
+                    }
+                } else {
+                    console.warn("Could not fetch PO details for display.");
+                }
+
+
+                // Fetch all WOs for this PO ID
+                const woResponse = await fetch(`${API_BASE_URL}/working-orders/${poId}`, {
+                    headers: { 'Authorization': 'Bearer ' + TOKEN }
+                });
+
+                if (!woResponse.ok) {
+                    const errorData = await woResponse.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${woResponse.status}`);
+                }
+
+                const res = await woResponse.json();
+                if (res.data && res.data.length > 0) {
+                    // If a specific wo_id is provided in URL, prioritize that. Otherwise, take the first WO.
+                    const requestedWoId = getQueryParam('wo_id');
+                    let wo = res.data[0]; // Default to the first WO
+                    if (requestedWoId) {
+                        const foundWo = res.data.find(w => w.wo_id === requestedWoId);
+                        if (foundWo) {
+                            wo = foundWo;
+                        } else {
+                            Swal.fire('Informasi', 'Working Order yang diminta tidak ditemukan untuk Purchase Order ini. Menampilkan WO pertama yang ditemukan.', 'info');
+                        }
+                    }
+
+                    $('#wo-id').val(wo.wo_id);
+                    $('#po-id').val(wo.po_id);
+                    $('#display-wo-status').text(wo.wo_id); // Update display ID
+
+                    $('#sender-warehouse-id').val(wo.sender_warehouse_id);
+                    $('#receiver-warehouse-id').val(wo.receiver_warehouse_id);
+                    $('#scheduled-pickup-time').val(wo.scheduled_pickup_time ? wo.scheduled_pickup_time.substring(0, 10) : ''); // Format date
+                    $('#net-weight-kg').val(wo.net_weight_kg);
+
+                    // Fetch and populate the latest logistic event data for this WO
+                    const eventResponse = await fetch(`${API_BASE_URL}/wo-logistic-events?wo_id=${wo.wo_id}&latest=true`, {
+                        headers: { 'Authorization': 'Bearer ' + TOKEN }
+                    });
+
+                    if (eventResponse.ok) {
+                        const eventResult = await eventResponse.json();
+                        if (eventResult.data && eventResult.data.length > 0) {
+                            const latestEvent = eventResult.data[0];
+                            // No event-type input
+                            $('#additional-notes').val(latestEvent.additional_notes || '');
+                            $('#gross-weight-kg').val(latestEvent.gross_weight_kg || '');
+                            $('#responsible-party').val(latestEvent.responsible_party || '');
+
+                            // Handle existing signature
+                            if (latestEvent.signature_url) {
+                                $('#current-signature-url').val(latestEvent.signature_url);
+                                $('#existing-signature-img').attr('src', latestEvent.signature_url);
+                                $('#existing-signature-preview').show();
+                                hideSignaturePad(); // Hide the signature pad, show preview
+                            } else {
+                                showSignaturePad(); // Show signature pad if no existing signature
+                            }
+
+                            // Handle existing photo
+                            if (latestEvent.photo_url) {
+                                $('#current-photo-url').val(latestEvent.photo_url);
+                                $('#existing-photo-img').attr('src', latestEvent.photo_url);
+                                $('#existing-photo-preview').show();
+                            } else {
+                                clearPhotoFile(); // Ensure photo preview is hidden if no photo
+                            }
+
+                        } else {
+                            showSignaturePad(); // If no latest event, show signature pad
+                            clearPhotoFile(); // Hide photo preview
+                        }
+                    } else {
+                        console.error("Error fetching latest logistic event:", await eventResponse.json());
+                        Swal.fire('Peringatan', 'Gagal memuat riwayat event logistik terbaru.', 'warning');
+                        showSignaturePad(); // Show signature pad if API fails
+                        clearPhotoFile(); // Hide photo preview
+                    }
+
+                    populateWarehouseDropdowns(wo.sender_warehouse_id, wo.receiver_warehouse_id);
+                } else {
+                    Swal.fire('Informasi', 'Tidak ada Working Order yang ditemukan untuk Purchase Order ini. Silakan buat WO baru dari halaman daftar PO.', 'info')
+                        .then(() => {
+                            window.close();
+                        });
+                }
+            } catch (err) {
+                console.error("Error fetching WO data for update:", err);
+                Swal.fire('Error', `Gagal memuat data Working Order untuk diperbarui: ${err.message || ''}.`, 'error');
+            }
+        }
+
+        $(document).ready(function() {
+            const poId = getQueryParam('po_id');
+            const woIdFromUrl = getQueryParam('wo_id'); // Check if wo_id is explicitly passed
+            
+            // Initialize signature pad only when the canvas exists and is visible
+            initSignaturePad(); // Always initialize, but control its visibility
+
+            if (poId) {
+                fetchWarehouses().then(() => {
+                    loadWOData(poId);
+                });
+            } else if (woIdFromUrl) {
+                // If only wo_id is passed, we might need to fetch PO_ID first
+                // For simplicity, let's assume po_id is always passed for now
+                // Or you could make an API call to get PO_ID from WO_ID if your backend supports it.
+                Swal.fire('Error', 'ID Purchase Order tidak ditemukan. Harap buka halaman ini dari daftar PO.', 'error')
+                    .then(() => {
+                        window.close();
+                    });
+            } else {
+                Swal.fire('Error', 'ID Purchase Order atau Working Order tidak ditemukan.', 'error')
+                    .then(() => {
+                        window.close();
+                    });
+            }
+
+            $('#sender-warehouse-id').on('change', function() {
+                const selectedSenderId = $(this).val();
+                updateReceiverOptions(selectedSenderId);
+            });
+
+            $('#updateWOForm').on('submit', async function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                if (!form.parsley().isValid()) {
+                    form.parsley().validate();
+                    Swal.fire('Peringatan', 'Harap lengkapi semua field yang wajib diisi.', 'warning');
+                    return;
+                }
+
+                const woId = $('#wo-id').val();
+                if (!woId) {
+                    Swal.fire('Error', 'ID Working Order tidak ditemukan untuk diperbarui.', 'error');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('po_id', $('#po-id').val());
+                formData.append('sender_warehouse_id', $('#sender-warehouse-id').val());
+                formData.append('receiver_warehouse_id', $('#receiver-warehouse-id').val());
+                formData.append('scheduled_pickup_time', $('#scheduled-pickup-time').val());
+                formData.append('net_weight_kg', parseFloat($('#net-weight-kg').val()));
+
+                // Append logistic event data
+                formData.append('additional_notes', $('#additional-notes').val() || '');
+                formData.append('gross_weight_kg', parseFloat($('#gross-weight-kg').val()) || '');
+                formData.append('responsible_party', $('#responsible-party').val() || '');
+
+                // Handle signature
+                if (isSignaturePadActive && !signaturePad.isEmpty()) {
+                    const signatureDataURL = signaturePad.toDataURL('image/png');
+                    formData.append('signature_data_url', signatureDataURL);
+                } else if (!isSignaturePadActive && $('#current-signature-url').val()) {
+                    // If signature pad is hidden and there was an existing signature,
+                    // send the existing URL so backend knows not to delete it.
+                    formData.append('signature_url', $('#current-signature-url').val());
+                } else if (!isSignaturePadActive && !$('#current-signature-url').val()) {
+                    // If signature pad is hidden and no existing signature,
+                    // implicitly means no signature is being sent/kept.
+                    // No need to append anything for signature_url or signature_data_url in this case.
+                } else if (isSignaturePadActive && signaturePad.isEmpty() && $('#current-signature-url').val()) {
+                    // User cleared the signature pad, but there was an existing signature.
+                    // This means they want to remove the existing signature.
+                    // Send an explicit signal to backend, e.g., signature_url: null
+                    formData.append('signature_url', ''); // Or 'null' depending on your backend
+                }
+
+
+                // Handle photo file
+                const photoFile = $('#photo-file')[0].files[0];
+                if (photoFile) {
+                    formData.append('photo_file', photoFile);
+                } else if ($('#current-photo-url').val()) {
+                    // If no new file selected, but there was an existing one, keep it
+                    formData.append('photo_url', $('#current-photo-url').val());
+                } else {
+                    // No new file and no existing one, means no photo is being sent/kept.
+                    // No need to append anything for photo_file or photo_url.
+                }
+
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/working-orders/${woId}`, { // Use PUT for update
+                        method: 'PUT',
+                        headers: {
+                            // 'Content-Type': 'application/json', // Do NOT set Content-Type for FormData
+                            'Authorization': 'Bearer ' + TOKEN
+                        },
+                        body: formData // Send FormData directly
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `Terjadi kesalahan saat memperbarui Working Order. Status: ${response.status}`);
+                    }
+
+                    const res = await response.json();
+                    Swal.fire('Berhasil', res.message || 'Working Order berhasil diperbarui.', 'success')
+                        .then(() => {
+                            window.close(); // Close the tab after successful update
+                        });
+
+                } catch (err) {
+                    console.error("Error submitting WO update:", err);
+                    Swal.fire('Gagal', err.message, 'error');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
+

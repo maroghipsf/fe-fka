@@ -39,7 +39,6 @@
                     </tbody>
                 </table>
 
-<!-- Modal WO Scheduling -->
 <div class="modal fade" id="modalWOScheduling" tabindex="-1" aria-labelledby="modalWOSchedulingLabel" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered">
     <div class="modal-content">
@@ -49,49 +48,55 @@
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Gudang Pengirim</th>
-            <th>Gudang Penerima</th>
-            <th>Tanggal Pickup</th>
-            <th>Party</th>
-          </tr>
-        </thead>
-        <tbody id="wo-table-body">
-          <!-- Data akan diisi secara dinamis -->
-        </tbody>
-      <form id="woSchedulingForm">
-        <div class="modal-body">
-          <input type="hidden" id="wo-po-id" name="po_id" />
-          <div class="mb-3">
-            <label for="sender-warehouse-id" class="form-label">Pilih Gudang Pengirim</label>
-            <select class="form-select" id="sender-warehouse-id" name="sender_warehouse_id" required>
-              <option value="">-- Pilih Gudang --</option>
-              <!-- Options will be populated dynamically -->
-            </select>
+      <div id="existing-wo-display" style="display: none;">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Gudang Pengirim</th>
+                <th>Gudang Penerima</th>
+                <th>Tanggal Pickup</th>
+                <th>Party</th>
+              </tr>
+            </thead>
+            <tbody id="wo-table-body">
+              </tbody>
+          </table>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
           </div>
-          <div class="mb-3">
-            <label for="receiver-warehouse-id" class="form-label">Pilih Gudang Penerima</label>
-            <select class="form-select" id="receiver-warehouse-id" name="receiver_warehouse_id" required>
-              <option value="">-- Pilih Gudang --</option>
-              <!-- Options will be populated dynamically -->
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="scheduled-pickup-time" class="form-label">Tanggal Pickup</label>
-            <input type="date" class="form-control" id="scheduled-pickup-time" name="scheduled_pickup_time" required />
-          </div>
-          <div class="mb-3">
-            <label for="net-weight-kg" class="form-label">Party</label>
-            <input type="text" class="form-control" id="net-weight-kg" name="net_weight_kg" placeholder="Masukkan Party" required />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Simpan</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        </div>
-      </form>
+      </div>
+
+      <div id="new-wo-form-container" style="display: none;">
+          <form id="woSchedulingForm">
+            <div class="modal-body">
+              <input type="hidden" id="wo-po-id" name="po_id" />
+              <div class="mb-3">
+                <label for="sender-warehouse-id" class="form-label">Pilih Gudang Pengirim</label>
+                <select class="form-select" id="sender-warehouse-id" name="sender_warehouse_id" required>
+                  <option value="">-- Pilih Gudang --</option>
+                  </select>
+              </div>
+              <div class="mb-3">
+                <label for="receiver-warehouse-id" class="form-label">Pilih Gudang Penerima</label>
+                <select class="form-select" id="receiver-warehouse-id" name="receiver_warehouse_id" required>
+                  <option value="">-- Pilih Gudang --</option>
+                  </select>
+              </div>
+              <div class="mb-3">
+                <label for="scheduled-pickup-time" class="form-label">Tanggal Pickup</label>
+                <input type="date" class="form-control" id="scheduled-pickup-time" name="scheduled_pickup_time" required />
+              </div>
+              <div class="mb-3">
+                <label for="net-weight-kg" class="form-label">Party</label>
+                <input type="text" class="form-control" id="net-weight-kg" name="net_weight_kg" placeholder="Masukkan Party" required />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Simpan</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+          </form>
+      </div>
     </div>
   </div>
 </div>
@@ -176,12 +181,40 @@
                 tbody.innerHTML = `<tr><td colspan="8" class="text-center">Data Purchase Order tidak ditemukan</td></tr>`;
             } else {
                 let counter = 1;
-                result.data.forEach(po => {
+                for (const po of result.data) { // Use for...of to use await inside loop
+                    // Check if WO exists for this PO
+                    let woButtons = '';
+                    try {
+                        const woResponse = await fetch(`${API_BASE_URL}/working-orders/${po.po_id}`, {
+                            headers: { 'Authorization': 'Bearer ' + TOKEN }
+                        });
+                        if (woResponse.ok) {
+                            const woResult = await woResponse.json();
+                            if (woResult.data && woResult.data.length > 0) {
+                                // If WO exists, show update and view buttons
+                                woButtons = `
+                                    <button class="btn btn-sm btn-primary" title="Lihat Detail WO" onclick="viewWODetails('${po.po_id}')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-info" title="Update WO" onclick="openUpdateWOForm('${po.po_id}')">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                `;
+                            }
+                        }
+                    } catch (err) {
+                        console.warn(`Could not check WO for PO ID ${po.po_id}:`, err);
+                        // Continue even if WO check fails for one PO
+                    }
+
                     tbody.innerHTML += `
                         <tr>
                             <td>${counter++}</td>
-                            <td>${po.project || ''}</td> <td>${po.sdip_no || ''}</td> <td>${formatDate(po.po_date)}</td>
-                            <td>${po.party_ton || ''}</td> <td>${po.description || ''}</td>
+                            <td>${po.project || ''}</td>
+                            <td>${po.sdip_no || ''}</td>
+                            <td>${formatDate(po.po_date)}</td>
+                            <td>${po.party_ton || ''}</td>
+                            <td>${po.description || ''}</td>
                             <td>${po.status_po || ''}</td>
                             <td>
                                 <button class="btn btn-sm btn-info" title="Edit" onclick="editPO('${po.po_id}')">
@@ -190,13 +223,14 @@
                                 <button class="btn btn-sm btn-warning" title="WO" onclick="openWOModal('${po.po_id}')">
                                     <i class="bi bi-calendar-event"></i>
                                 </button>
+                                ${woButtons}
                                 <button class="btn btn-sm btn-danger" title="Delete" onclick="deletePO('${po.po_id}')">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>
                         </tr>
                     `;
-                });
+                }
             }
         } catch (err) {
             console.error("Error fetching PO data:", err);
@@ -210,52 +244,76 @@
 
     // --- Fungsi untuk Membuka Modal Penjadwalan WO ---
     async function openWOModal(poId) {
-        const response = await fetch(`${API_BASE_URL}/working-orders/${poId}`, {
-            headers: { 'Authorization': 'Bearer ' + TOKEN }
-        });
+        // Get the display containers
+        const existingWODisplay = $('#existing-wo-display');
+        const newWOFormContainer = $('#new-wo-form-container');
+        const woTableBody = $('#wo-table-body');
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
+        // Reset display states
+        existingWODisplay.hide();
+        newWOFormContainer.hide();
+        woTableBody.empty(); // Clear previous WO data
 
-        const res = await response.json();
+        try {
+            const response = await fetch(`${API_BASE_URL}/working-orders/${poId}`, {
+                headers: { 'Authorization': 'Bearer ' + TOKEN }
+            });
 
-        if (res.data.length === 0) {
-            $('#wo-po-id').val(poId);
-            // Clear previous selections and input values
-            $('#sender-warehouse-id').val('');
-            $('#receiver-warehouse-id').val('');
-            $('#scheduled-pickup-time').val('');
-            $('#net-weight-kg').val('');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
 
-            try {
+            const res = await response.json();
+
+            if (res.data && res.data.length > 0) {
+                // If WO data exists, populate the table and show it
+                res.data.forEach(wo => {
+                    woTableBody.append(`
+                        <tr>
+                            <td>${wo.sender_warehouse ? wo.sender_warehouse.warehouse_name : '-'}</td>
+                            <td>${wo.receiver_warehouse ? wo.receiver_warehouse.warehouse_name : '-'}</td>
+                            <td>${formatDate(wo.scheduled_pickup_time)}</td>
+                            <td>${wo.net_weight_kg || ''}</td>
+                        </tr>
+                    `);
+                });
+                existingWODisplay.show(); // Show the table
+            } else {
+                // If no WO data, show the form
+                $('#wo-po-id').val(poId);
+                // Clear previous selections and input values
+                $('#sender-warehouse-id').val('');
+                $('#receiver-warehouse-id').val('');
+                $('#scheduled-pickup-time').val('');
+                $('#net-weight-kg').val('');
+
                 // Ambil data gudang dari API
-                const response = await fetch(`${API_BASE_URL}/warehouses`, {
+                const warehouseResponse = await fetch(`${API_BASE_URL}/warehouses`, {
                     headers: { 'Authorization': 'Bearer ' + TOKEN }
                 });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                if (!warehouseResponse.ok) {
+                    const errorData = await warehouseResponse.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${warehouseResponse.status}`);
                 }
-                const data = await response.json();
+                const warehouseData = await warehouseResponse.json();
 
                 // Simpan semua gudang ke variabel global
-                allWarehouses = data.data && Array.isArray(data.data) ? data.data : [];
+                allWarehouses = warehouseData.data && Array.isArray(warehouseData.data) ? warehouseData.data : [];
 
                 // Isi dropdown gudang (pengirim dan penerima)
                 populateWarehouseDropdowns();
 
-                // Tampilkan modal
-                var modal = new bootstrap.Modal(document.getElementById('modalWOScheduling'));
-                modal.show();
-
-            } catch (err) {
-                console.error("Error fetching warehouse data:", err);
-                Swal.fire('Error', `Gagal memuat data gudang: ${err.message || ''}.`, 'error');
+                newWOFormContainer.show(); // Show the form
             }
-        }else {
-            Swal.fire('Info', 'Working Order sudah ada untuk PO ini.', 'info');
+
+            // Tampilkan modal
+            var modal = new bootstrap.Modal(document.getElementById('modalWOScheduling'));
+            modal.show();
+
+        } catch (err) {
+            console.error("Error fetching WO or warehouse data:", err);
+            Swal.fire('Error', `Gagal memuat data Working Order atau gudang: ${err.message || ''}.`, 'error');
         }
     }
 
@@ -420,5 +478,15 @@
                 }
             }
         });
+    }
+
+    // --- Fungsi untuk membuka halaman Update WO ---
+    function openUpdateWOForm(poId) {
+        window.open(`/wo/form_wo_content.html?po_id=${poId}`, '_blank');
+    }
+
+    // --- Fungsi untuk membuka halaman Lihat Detail WO ---
+    function viewWODetails(poId) {
+        window.open(`/wo/list_wo_content.html?po_id=${poId}`, '_blank');
     }
 </script>
