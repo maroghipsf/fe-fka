@@ -22,7 +22,45 @@
         }
         .event-table th, .event-table td {
             white-space: nowrap; /* Prevent wrapping for event table */
-        }</style></head><body><script src="/assets/static/js/initTheme.js"></script><div id="app"><div id="sidebar"><div class="sidebar-wrapper active"><div class="sidebar-header position-relative"><div class="d-flex justify-content-between align-items-center"><div class="logo d-flex align-items-center"><a href="/index.html"><img src="/assets/compiled/svg/logo.svg" alt="Logo"></a></div><!-- Logout icon di pojok kanan --><div><a id="logout-btn" title="Logout" class="d-inline-block"><i class="bi bi-box-arrow-right fs-4"></i></a></div><div class="sidebar-toggler x"><a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a></div></div></div><div class="sidebar-menu"><ul class="menu"><!-- 1. Beranda (Dashboard) --><li class="sidebar-item"><a href="/index.html" class="sidebar-link"><i class="bi bi-house-door"></i> <span>Beranda</span></a></li><!-- 2. Keuangan --><li class="sidebar-title">Keuangan</li><li class="sidebar-item"><a href="/keuangan/ringkasan.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> <span>Ringkasan Keuangan</span></a></li><li class="sidebar-item"><a href="/keuangan/riwayat-transaksi.html" class="sidebar-link"><i class="bi bi-clock-history"></i> <span>Riwayat Transaksi Bank</span></a></li><li class="sidebar-item"><a href="/keuangan/transfer-dana.html" class="sidebar-link"><i class="bi bi-arrow-left-right"></i> <span>Transfer Dana</span></a></li><li class="sidebar-item has-sub"><a href="#" class="sidebar-link"><i class="bi bi-graph-up"></i> <span>Laporan Keuangan</span></a><ul class="submenu"><li class="submenu-item"><a href="/keuangan/laporan-arus-kas.html" class="submenu-link">Laporan Arus Kas</a></li><li class="submenu-item"><a href="/keuangan/laporan-laba-rugi.html" class="submenu-link">Laporan Laba Rugi</a></li><li class="submenu-item"><a href="/keuangan/laporan-pengeluaran-wo.html" class="submenu-link">Laporan Pengeluaran WO</a></li><li class="submenu-item"><a href="/keuangan/laporan-pembayaran-invoice.html" class="submenu-link">Laporan Pembayaran Invoice</a></li></ul></li><!-- 3. Manajemen PO --><li class="sidebar-title">Manajemen PO</li><li class="sidebar-item"><a href="/po/po.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> <span>Purchase Order (PO)</span></a></li><!-- <li class="sidebar-item">
+        }</style></head><body><script src="/assets/static/js/initTheme.js"></script><div id="app"><div id="sidebar"><div class="sidebar-wrapper active"><div class="sidebar-header position-relative"><div class="d-flex justify-content-between align-items-center"><div class="logo d-flex align-items-center"><a href="/index.html"><img src="/assets/compiled/svg/logo.svg" alt="Logo"></a></div><!-- Logout icon di pojok kanan --><div><a id="logout-btn" title="Logout" class="d-inline-block"><i class="bi bi-box-arrow-right fs-4"></i></a></div><div class="sidebar-toggler x"><a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a></div></div></div><div class="sidebar-menu"><ul class="menu"><!-- 1. Beranda (Dashboard) --><li class="sidebar-item"><a href="/index.html" class="sidebar-link"><i class="bi bi-house-door"></i> <span>Beranda</span></a></li><!-- 2. Keuangan --><!-- <li class="sidebar-title">Keuangan</li>
+                <li class="sidebar-item">
+                    <a href="/keuangan/ringkasan.html" class="sidebar-link">
+                        <i class="bi bi-bar-chart"></i>
+                        <span>Ringkasan Keuangan</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/keuangan/riwayat-transaksi.html" class="sidebar-link">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Riwayat Transaksi Bank</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/keuangan/transfer-dana.html" class="sidebar-link">
+                        <i class="bi bi-arrow-left-right"></i>
+                        <span>Transfer Dana</span>
+                    </a>
+                </li>
+                <li class="sidebar-item has-sub">
+                    <a href="#" class="sidebar-link">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Laporan Keuangan</span>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="/keuangan/laporan-arus-kas.html" class="submenu-link">Laporan Arus Kas</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="/keuangan/laporan-laba-rugi.html" class="submenu-link">Laporan Laba Rugi</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="/keuangan/laporan-pengeluaran-wo.html" class="submenu-link">Laporan Pengeluaran WO</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="/keuangan/laporan-pembayaran-invoice.html" class="submenu-link">Laporan Pembayaran Invoice</a>
+                        </li>
+                    </ul>
+                </li> --><!-- 3. Manajemen PO --><li class="sidebar-title">Manajemen PO</li><li class="sidebar-item"><a href="/po/po.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> <span>Purchase Order (PO)</span></a></li><!-- <li class="sidebar-item">
                     <a href="/wo/daftar-wo.html" class="sidebar-link">
                         <i class="bi bi-truck"></i>
                         <span>Working Order (WO)</span>
@@ -38,7 +76,18 @@
                         <i class="bi bi-box"></i>
                         <span>Manajemen Item (Barang/Jasa)</span>
                     </a>
-                </li> --><li class="sidebar-item"><a href="/master/akun-bank.html" class="sidebar-link"><i class="bi bi-bank"></i> <span>Manajemen Akun Bank</span></a></li><li class="sidebar-item"><a href="/master/manajemen-bunga.html" class="sidebar-link"><i class="bi bi-percent"></i> <span>Manajemen Bunga Bank</span></a></li><!-- 6. Pengaturan & Audit --><li class="sidebar-title">Pengaturan & Audit</li><li class="sidebar-item"><a href="/settings/users.html" class="sidebar-link"><i class="bi bi-people-fill"></i> <span>Manajemen Pengguna</span></a></li><li class="sidebar-item"><a href="/settings/roles.html" class="sidebar-link"><i class="bi bi-shield-lock"></i> <span>Manajemen Peran & Hak Akses</span></a></li><li class="sidebar-item"><a href="/settings/audit-trail.html" class="sidebar-link"><i class="bi bi-activity"></i> <span>Audit Trail</span></a></li><li class="sidebar-item"><a href="/settings/notifikasi.html" class="sidebar-link"><i class="bi bi-bell"></i> <span>Notifikasi</span></a></li></ul></div></div></div><div id="main"><header class="mb-3"><a href="#" class="burger-btn d-block d-xl-none"><i class="bi bi-justify fs-3"></i></a></header><div class="page-heading"><div class="page-title"><div class="row"><div class="col-12 col-md-6 order-md-1 order-last"><h3 id="page-title-wo-list">Detail Working Orders untuk PO: <span id="po-display-id"></span></h3></div><div class="col-12 col-md-6 order-md-2 order-first"><nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li><li class="breadcrumb-item"><a href="/po.html">List Purchase Order</a></li><li class="breadcrumb-item active" aria-current="page">Detail Working Orders</li></ol></nav></div></div></div><section id="wo-list-section"><div class="row"><div class="col-12"><div class="card"><div class="card-content"><div class="card-body"><p><strong>Project:</strong> <span id="po-project"></span></p><p><strong>SDIP Nomor:</strong> <span id="po-sdip-no"></span></p><div id="wo-cards-container"><p id="no-wo-message" style="display: none; text-align: center; color: #888;">Tidak ada Working Order untuk Purchase Order ini.</p></div><div class="row mt-4"><div class="col-12 d-flex justify-content-end"><button type="button" class="btn btn-light-secondary me-1 mb-1" onclick="window.close()">Tutup</button></div></div></div></div></div></div></div></section></div><footer><div class="footer clearfix mb-0 text-muted"><div class="float-start"><p>2023 &copy; Mazer</p></div><div class="float-end"><p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span> by <a href="https://saugi.me">Saugi</a></p></div></div></footer></div></div><script src="/assets/static/js/components/dark.js"></script><script src="/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script><script src="/assets/compiled/js/app.js"></script><script src="/assets/static/js/auth-guard.js"></script><script>$(document).on('click', '#logout-btn', function(e) {
+                </li> --><!-- <li class="sidebar-item">
+                    <a href="/master/akun-bank.html" class="sidebar-link">
+                        <i class="bi bi-bank"></i>
+                        <span>Manajemen Akun Bank</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/master/manajemen-bunga.html" class="sidebar-link">
+                        <i class="bi bi-percent"></i>
+                        <span>Manajemen Bunga Bank</span>
+                    </a>
+                </li> --><!-- 6. Pengaturan & Audit --><li class="sidebar-title">Pengaturan & Audit</li><li class="sidebar-item"><a href="/settings/users.html" class="sidebar-link"><i class="bi bi-people-fill"></i> <span>Manajemen Pengguna</span></a></li><li class="sidebar-item"><a href="/settings/roles.html" class="sidebar-link"><i class="bi bi-shield-lock"></i> <span>Manajemen Peran & Hak Akses</span></a></li><li class="sidebar-item"><a href="/settings/audit-trail.html" class="sidebar-link"><i class="bi bi-activity"></i> <span>Audit Trail</span></a></li><li class="sidebar-item"><a href="/settings/notifikasi.html" class="sidebar-link"><i class="bi bi-bell"></i> <span>Notifikasi</span></a></li></ul></div></div></div><div id="main"><header class="mb-3"><a href="#" class="burger-btn d-block d-xl-none"><i class="bi bi-justify fs-3"></i></a></header><div class="page-heading"><div class="page-title"><div class="row"><div class="col-12 col-md-6 order-md-1 order-last"><h3 id="page-title-wo-list">Detail Working Orders untuk PO: <span id="po-display-id"></span></h3></div><div class="col-12 col-md-6 order-md-2 order-first"><nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/index.html">Dashboard</a></li><li class="breadcrumb-item"><a href="/po.html">List Purchase Order</a></li><li class="breadcrumb-item active" aria-current="page">Detail Working Orders</li></ol></nav></div></div></div><section id="wo-list-section"><div class="row"><div class="col-12"><div class="card"><div class="card-content"><div class="card-body"><p><strong>Project:</strong> <span id="po-project"></span></p><p><strong>SDIP Nomor:</strong> <span id="po-sdip-no"></span></p><div id="wo-cards-container"><p id="no-wo-message" style="display: none; text-align: center; color: #888;">Tidak ada Working Order untuk Purchase Order ini.</p></div><div class="row mt-4"><div class="col-12 d-flex justify-content-end"><button type="button" class="btn btn-light-secondary me-1 mb-1" onclick="window.close()">Tutup</button></div></div></div></div></div></div></div></section></div><footer><div class="footer clearfix mb-0 text-muted"><div class="float-start"><p>2023 &copy; Mazer</p></div><div class="float-end"><p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span> by <a href="https://saugi.me">Saugi</a></p></div></div></footer></div></div><script src="/assets/static/js/components/dark.js"></script><script src="/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script><script src="/assets/compiled/js/app.js"></script><script src="/assets/static/js/auth-guard.js"></script><script>$(document).on('click', '#logout-btn', function(e) {
     e.preventDefault();
     localStorage.removeItem('token');
     window.location.href = '/auth-login.html';
@@ -102,8 +151,8 @@
                     throw new Error(errorData.message || `Failed to fetch PO details: ${poResponse.status}`);
                 }
                 const poData = await poResponse.json();
-                if (poData.data && poData.data.length > 0) {
-                    const po = poData.data[0];
+                if (poData.data && poData.data.constructor.length > 0) {
+                    const po = poData.data;
                     $('#po-display-id').text(po.po_id || '-');
                     $('#po-project').text(po.project || '-');
                     $('#po-sdip-no').text(po.sdip_no || '-');
@@ -112,22 +161,23 @@
                     Swal.fire('Informasi', 'Detail Purchase Order tidak ditemukan.', 'info');
                     return;
                 }
-
+                
                 // Fetch Working Orders for this PO
                 const woResponse = await fetch(`${API_BASE_URL}/working-orders/${poId}`, {
                     headers: { 'Authorization': 'Bearer ' + TOKEN }
                 });
-
+                
                 if (!woResponse.ok) {
                     const errorData = await woResponse.json();
                     throw new Error(errorData.message || `HTTP error! status: ${woResponse.status}`);
                 }
-
+                
                 const woResult = await woResponse.json();
                 const woCardsContainer = $('#wo-cards-container');
                 woCardsContainer.empty(); // Clear previous content
-
+                
                 if (woResult.data && woResult.data.length > 0) {
+                    console.log("Fetched WO data:", woResult.data);
                     for (const wo of woResult.data) {
                         let eventsHtml = '';
                         // Fetch logistic events for each WO

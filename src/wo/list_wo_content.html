@@ -160,8 +160,8 @@
                     throw new Error(errorData.message || `Failed to fetch PO details: ${poResponse.status}`);
                 }
                 const poData = await poResponse.json();
-                if (poData.data && poData.data.length > 0) {
-                    const po = poData.data[0];
+                if (poData.data && poData.data.constructor.length > 0) {
+                    const po = poData.data;
                     $('#po-display-id').text(po.po_id || '-');
                     $('#po-project').text(po.project || '-');
                     $('#po-sdip-no').text(po.sdip_no || '-');
@@ -170,22 +170,23 @@
                     Swal.fire('Informasi', 'Detail Purchase Order tidak ditemukan.', 'info');
                     return;
                 }
-
+                
                 // Fetch Working Orders for this PO
                 const woResponse = await fetch(`${API_BASE_URL}/working-orders/${poId}`, {
                     headers: { 'Authorization': 'Bearer ' + TOKEN }
                 });
-
+                
                 if (!woResponse.ok) {
                     const errorData = await woResponse.json();
                     throw new Error(errorData.message || `HTTP error! status: ${woResponse.status}`);
                 }
-
+                
                 const woResult = await woResponse.json();
                 const woCardsContainer = $('#wo-cards-container');
                 woCardsContainer.empty(); // Clear previous content
-
+                
                 if (woResult.data && woResult.data.length > 0) {
+                    console.log("Fetched WO data:", woResult.data);
                     for (const wo of woResult.data) {
                         let eventsHtml = '';
                         // Fetch logistic events for each WO
